@@ -1,8 +1,434 @@
-{%- extends "_layout.swig" -%}
-{%- import '_macro/post.swig' as post_template -%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{%- block title -%} {{ page.title }} - {{ config.title }} {%- endblock -%}
+  
+  <title>服务器推送技术 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="为解决Web应用中server向client“主动”发起请求的需求，出现了服务器推送技术。本文对服务器推送技术进行分类，然后分析其具体应用场景，例如淘宝，微信的web端的扫码登录的流程。  1. 服务器推送技术分类http协议为无状态，单向性的协议，必须有客户端发起请求，服务端接受请求，做出响应。在此特性下，要实现服务端“主动”发起的推送技术，有如下几种实现方式：  Ajax短轮询 Comet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务器推送技术">
+<meta property="og:url" content="ztxpp.cc/2020/04/25/webPushTec/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="为解决Web应用中server向client“主动”发起请求的需求，出现了服务器推送技术。本文对服务器推送技术进行分类，然后分析其具体应用场景，例如淘宝，微信的web端的扫码登录的流程。  1. 服务器推送技术分类http协议为无状态，单向性的协议，必须有客户端发起请求，服务端接受请求，做出响应。在此特性下，要实现服务端“主动”发起的推送技术，有如下几种实现方式：  Ajax短轮询 Comet">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E8%BD%AE%E8%AF%A2%E4%B8%8E%E9%95%BF%E8%BD%AE%E8%AF%A2.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/metaq%E7%9A%84push.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/SSE.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/websocket.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F%E6%AF%94%E8%BE%83.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E6%B7%98%E5%AE%9D%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E6%B7%98%E5%AE%9D%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E5%BE%AE%E4%BF%A1%E7%BD%91%E9%A1%B5%E7%89%88%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95.png">
+<meta property="article:published_time" content="2020-04-25T07:11:08.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E8%BD%AE%E8%AF%A2%E4%B8%8E%E9%95%BF%E8%BD%AE%E8%AF%A2.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{%- block content -%}
-  {{ post_template.render(page) }}
-{%- endblock -%}
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-webPushTec" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/25/webPushTec/" class="article-date">
+  <time datetime="2020-04-25T07:11:08.000Z" itemprop="datePublished">2020-04-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      服务器推送技术
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>为解决Web应用中server向client“主动”发起请求的需求，出现了服务器推送技术。本文对服务器推送技术进行分类，然后分析其具体应用场景，例如淘宝，微信的web端的扫码登录的流程。</p>
+</blockquote>
+<h1 id="1-服务器推送技术分类"><a href="#1-服务器推送技术分类" class="headerlink" title="1. 服务器推送技术分类"></a>1. 服务器推送技术分类</h1><p>http协议为无状态，单向性的协议，必须有客户端发起请求，服务端接受请求，做出响应。在此特性下，要实现服务端“主动”发起的推送技术，有如下几种实现方式：</p>
+<ul>
+<li>Ajax短轮询</li>
+<li>Comet<ul>
+<li>Ajax长轮询</li>
+<li>http streaming</li>
+</ul>
+</li>
+<li>SSE</li>
+<li>WebSocket</li>
+<li>基于MQ</li>
+</ul>
+<h2 id="1-Ajax短轮询"><a href="#1-Ajax短轮询" class="headerlink" title="1. Ajax短轮询"></a>1. Ajax短轮询</h2><ul>
+<li>定义： 短轮询是指客户端定时向服务器发送ajax请求，服务器接到请求后马上返回响应信息并关闭连接。Ajax短轮询其实就是：“脚本发送的http请求。”</li>
+<li>举例：   <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;javascript&quot;</span>&gt;</span></span><br><span class="line">    showTime();</span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">showTime</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        $.get(<span class="string">&quot;showTime&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(data);</span></span><br><span class="line"><span class="javascript">            $(<span class="string">&quot;#serverTime&quot;</span>).html(data);</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"><span class="javascript">    <span class="built_in">setInterval</span>(showTime,<span class="number">1000</span>); <span class="comment">//重点在于定时发送</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="2-Comet"><a href="#2-Comet" class="headerlink" title="2. Comet"></a>2. Comet</h2><ul>
+<li>定义：Alex Russell（Dojo Toolkit 的项目 Lead）称基于 HTTP 长连接、无须在浏览器端安装插件的“服务器推”技术为“Comet”。</li>
+<li>分类：<ul>
+<li>基于 AJAX 的长轮询（long-polling）方式</li>
+<li>基于 Iframe 及 htmlfile 的流（streaming）方式</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-基于-AJAX-的长轮询（long-polling）方式"><a href="#2-1-基于-AJAX-的长轮询（long-polling）方式" class="headerlink" title="2.1 基于 AJAX 的长轮询（long-polling）方式"></a>2.1 基于 AJAX 的长轮询（long-polling）方式</h3><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E8%BD%AE%E8%AF%A2%E4%B8%8E%E9%95%BF%E8%BD%AE%E8%AF%A2.png" alt="轮询与长轮询"></p>
+<ul>
+<li><p>定义：在普通轮询过程中，client接受响应的速度受制于定时器的发送频率。长轮询中，当server接受到client发送的请求后，hold住一段时间，若有消息，则立刻返回。client接受到响应（1）、或者超时（2）、或者异常（3）时，重新发起一次新的请求。</p>
+</li>
+<li><p>应用：在一些使用Pull模式消费的消息系统，会使用Long Polling技术进行优化。例如下图是MetaQ推送的服务端设计，实际是利用的长轮询的原理。</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/metaq%E7%9A%84push.png" alt="metaQ的push"></p>
+</li>
+</ul>
+<h3 id="2-2-基于Iframe及htmlfile的流（streaming）方式"><a href="#2-2-基于Iframe及htmlfile的流（streaming）方式" class="headerlink" title="2.2 基于Iframe及htmlfile的流（streaming）方式"></a>2.2 基于Iframe及htmlfile的流（streaming）方式</h3><ul>
+<li>定义：iframe 是很早就存在的一种 HTML 标记， 通过在 HTML 页面里嵌入一个隐蔵帧，然后将这个隐蔵帧的 SRC 属性设为对一个长连接的请求，服务器端就能源源不断地往客户端输入数据。</li>
+<li>实现方式：iframe 服务器端并不返回直接显示在页面的数据，而是返回对客户端 Javascript 函数的调用，服务器端将返回的数据作为客户端 JavaScript 函数的参数传递；客户端浏览器的 Javascript 引擎在收到服务器返回的 JavaScript 调用时就会去执行代码。（即是在返回的数据中嵌入JS脚本），例如：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot;&gt;js_func(“data from server ”)&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>应用：Google 使用一个称为“htmlfile”的 ActiveX 解决了在 IE 中的加载显示问题，并将这种方法用到了 gmail+gtalk 产品中。</li>
+</ul>
+<h2 id="3-SSE-（Server-Sent-Events）"><a href="#3-SSE-（Server-Sent-Events）" class="headerlink" title="3. SSE （Server-Sent Events）"></a>3. SSE （Server-Sent Events）</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/SSE.png" alt="SSE"></p>
+<ul>
+<li>定义：服务器向客户端声明，接下来要发送的是流信息（streaming）。这时，客户端不会关闭连接，会一直等着服务器发过来的新的数据流。本质上是以流信息的方式，完成一次用时很长的下载。</li>
+<li>应用：视频播放</li>
+<li>实现方式，参考 阮一峰的<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2017/05/server-sent_events.html">Server-Sent Events 教程</a></li>
+</ul>
+<h2 id="4-WebSocket"><a href="#4-WebSocket" class="headerlink" title="4. WebSocket"></a>4. WebSocket</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/websocket.png" alt="http与WebSocket"></p>
+<ul>
+<li>定义：WebSocket是一种网络传输协议，可在单个TCP连接上进行全双工通信，位于OSI模型的应用层。</li>
+<li>特点：可以发送文本，也可以发送二进制数据。协议标识符是ws（如果加密，则为wss），服务器网址就是 URL。</li>
+<li>基于client：javascript 和 server：java的实现：</li>
+</ul>
+<ol>
+<li>maven添加websocket库</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-boot-starter-websocket&lt;&#x2F;artifactId&gt;</span><br><span class="line">  &lt;exclusions&gt;</span><br><span class="line">    &lt;exclusion&gt;</span><br><span class="line">      &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spring-boot-starter-tomcat&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;&#x2F;exclusion&gt;</span><br><span class="line">  &lt;&#x2F;exclusions&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-boot-starter-undertow&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>server：</p>
+<p> 有两种创建服务器端代码的方法：</p>
+</li>
+</ol>
+<ul>
+<li>注解方式(Annotation-driven): 通过在POJO加上注解, 开发者就可以处理WebSocket 生命周期事件。</li>
+<li>实现接口方式(Interface-driven): 开发者可以实现Endpoint接口和声明周期的各个方法。</li>
+</ul>
+<p>添加配置类 WebSocketConfig 代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebSocket</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServerEndpointExporter <span class="title">serverEndpoint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ServerEndpointExporter();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>添加处理连接和处理消息类 MyWebSocket</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ServerEndpoint(value = &quot;/websocket&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWebSocket</span> </span>&#123;</span><br><span class="line">    <span class="comment">//在线人数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> online = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//所有的对象，用于群发</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;MyWebSocket&gt; webSockets = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</span><br><span class="line">    <span class="comment">//会话</span></span><br><span class="line">    <span class="keyword">private</span> Session session;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Session <span class="title">getSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> session;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//建立连接</span></span><br><span class="line">    <span class="meta">@OnOpen</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(Session session)</span> </span>&#123;</span><br><span class="line">        online++;</span><br><span class="line">        webSockets.add(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">this</span>.session = session;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//连接关闭</span></span><br><span class="line">    <span class="meta">@OnClose</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        online--;</span><br><span class="line">        webSockets.remove(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//收到客户端的消息</span></span><br><span class="line">    <span class="meta">@OnMessage</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">onMessage</span><span class="params">(String text, Session session)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;client message: &quot;</span> + text;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>client:</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.WebSocket) &#123;</span><br><span class="line">  <span class="comment">// Create WebSocket connection.</span></span><br><span class="line">  <span class="keyword">const</span> socket = <span class="keyword">new</span> WebSocket(<span class="string">&#x27;ws://localhost:8080/websocket&#x27;</span>);</span><br><span class="line">  <span class="comment">// Connection opened</span></span><br><span class="line">  socket.addEventListener(<span class="string">&#x27;open&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    socket.send(<span class="string">&#x27;Hello Server!&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// Connection closed</span></span><br><span class="line">  socket.addEventListener(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    socket.send(<span class="string">&#x27;I am leave!&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// Listen for messages</span></span><br><span class="line">  socket.addEventListener(<span class="string">&#x27;message&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(event);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// 延时给服务端发送一条消息</span></span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    socket.send(<span class="string">&#x27;hello world!&#x27;</span>);</span><br><span class="line">  &#125;, <span class="number">500</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-基于MQ"><a href="#5-基于MQ" class="headerlink" title="5. 基于MQ"></a>5. 基于MQ</h2><ul>
+<li>一般由webserver向webclient进行消息推送，中间并不包含第三者（中间件）。但是如对需要推送的消息具有更高层面的要求，例如 架构上松耦合、异步处理、消息管理、持久化、削峰填谷等。则可以利用消息中间件来完成消息的传递。而将webserver作为消息的生产者，发送消息经过MQ，传递到webclient的过程，就完成了基于MQ的服务器端的推送。</li>
+<li>关于消息中间件可以参看这篇：<a href="https://ztxpp.cc/2019/05/06/MQ/">以activemq为例的消息中间件浅析</a></li>
+<li>一种实现方式： js client(STOMP.js) + activeMQ + java server</li>
+</ul>
+<h1 id="2-推送技术的对比分析"><a href="#2-推送技术的对比分析" class="headerlink" title="2. 推送技术的对比分析"></a>2. 推送技术的对比分析</h1><ul>
+<li><p>Ajax短轮询：</p>
+<ul>
+<li><p>优点：不用配置，非常简单，就是一个定时器。</p>
+</li>
+<li><p>缺点：</p>
+<ol>
+<li><p>轮询的时间间隔需要进行仔细考虑。<br>轮询的间隔过长，延迟高。会导致用户不能及时接收到更新的数据；轮询的间隔过短，server压力大。查询请求过多，增加服务器端的负担（每次轮询都会进行一次完整的HTTP请求，如果没有数据更新，相当于是一次“浪费”的请求）。</p>
+</li>
+<li><p>一旦遇到页面有大量任务或者返回时间特别耗时，页面可能会出现‘假死’，无法响应用户行为。</p>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>Comet：</p>
+<ul>
+<li>优点：减少了不必要的http请求次数。</li>
+<li>缺点：连接挂起（hold）也会导致资源的浪费。</li>
+<li>分析：轮询与长轮询都是基于HTTP的，两者本身存在着缺陷:轮询需要更快的处理速度；长轮询则更要求处理并发的能力;两者都是“被动型服务器”的体现:服务器不会主动推送信息，而是在客户端发送ajax请求后进行返回的响应。而理想的模型是”在服务器端数据有了变化后，可以主动推送给客户端”,这种”主动型”服务器是解决这类问题的很好的方案。Web Sockets就是这样的方案</li>
+</ul>
+</li>
+<li><p>SSE:</p>
+<ul>
+<li>SSE单工，WebSocket双工</li>
+<li>SSE 默认支持断线重连，WebSocket 需要自己实现。</li>
+<li>一般只用来传送文本，二进制数据需要编码后传送，WebSocket 默认支持传送二进制数据。</li>
+<li>SSE使用 HTTP 协议，现有的服务器软件都支持。WebSocket 是一个独立协议。</li>
+</ul>
+</li>
+<li><p>WebSocket:</p>
+<ul>
+<li>从互联网协议的角度看：之前三者都是应用层基于TCP的HTTP协议，WebSocket则是应用层的另一个基于TCP协议；</li>
+<li>是真正意义上的全双工通信。</li>
+<li>实现起来，与前三种相比较为复杂。</li>
+</ul>
+</li>
+<li><p>MQ:</p>
+<ul>
+<li>从协议角度看，消息中间件实现的协议，例如：<ul>
+<li>AMQP（AdvancedMessage Queuing Protocol）即高级消息队列协议是应用层协议的一个开放标准</li>
+<li>STOMP（Simple (or Streaming) Text Orientated Messaging Protocol），即简单的面向文本/流的消息协议，一般是Stomp Over Websocket，可以理解为基于WebSockets的一个协议。</li>
+</ul>
+</li>
+<li>对于消息而言，可以满足更高层面的需求。</li>
+</ul>
+</li>
+<li><p>几种连接方式的比较：</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F%E6%AF%94%E8%BE%83.png" alt="连接方式的比较"></p>
+</li>
+</ul>
+<h1 id="3-服务器推送举例分析"><a href="#3-服务器推送举例分析" class="headerlink" title="3. 服务器推送举例分析"></a>3. 服务器推送举例分析</h1><h2 id="3-1-淘宝网页版扫码登录"><a href="#3-1-淘宝网页版扫码登录" class="headerlink" title="3.1 淘宝网页版扫码登录"></a>3.1 淘宝网页版扫码登录</h2><ul>
+<li><p>需求分析：淘宝，京东平台网页版，具有扫码登录环节，需要手机扫码配合完成登录流程。手机登录成功后，server端是如何将消息推送到web client的呢？下面就此进行分析。</p>
+</li>
+<li><p>抓包分析：</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E6%B7%98%E5%AE%9D%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95.png" alt="抓包分析"></p>
+<p>  只针对server是如何推送消息到web client这一阶段，进行抓包分析，可知使用的是时间间隔为大约5s的Ajax短轮询。</p>
+</li>
+<li><p>全流程时序分析</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E6%B7%98%E5%AE%9D%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png" alt="淘宝网页版扫码登录时序图"></p>
+<p>  全流程时序分析不是本文的重点，大致分为三个阶段： 网页获取二维码阶段，网页短轮询阶段，手机扫码登录阶段。</p>
+<ul>
+<li>网页获取二维码阶段：web browser与 web server进行一次通信，网页显示出二维码信息。web server将此uuid信息返回给browser，并在缓存中以此 uuid为key进行保存，并且设置过期时间。</li>
+<li>网页轮询阶段： web browser 通过5s一次的短轮询，希望从web server中获取手机是否已经扫码完成登录的信息，当未过期，或者为获取到userId信息时，重复请求。</li>
+<li>手机扫码登录阶段： 手机端通过扫描二维码，获取到uuid和二维码验证信息，并辅以手机端登录态的token信息，向mobile server发起web端登录请求； server比对二维码信息后，恢复是否确认登录；手机端点击确认登陆后，server将此uuid做key, 用手机端登录态token中获取到的userId作value存入缓存中。并回复手机端登陆成功。</li>
+<li>网页端轮询阶段：网页端轮询请求至此，web server便可以由uuid获取到 userId的信息，登陆成功，返回web token，跳转至首页。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-2-京东网页版扫码登录"><a href="#3-2-京东网页版扫码登录" class="headerlink" title="3.2 京东网页版扫码登录"></a>3.2 京东网页版扫码登录</h2><p>代码分析，可知是使用的短轮询。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;script language=<span class="string">&quot;JavaScript&quot;</span>&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loginGetEid</span>(<span class="params">count</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(count &gt;= <span class="number">4</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">typeof</span>(getJdEid) == <span class="string">&quot;function&quot;</span>) &#123;</span><br><span class="line">                getJdEid(<span class="function"><span class="keyword">function</span>(<span class="params">eid,fp,udfp</span>)</span>&#123;</span><br><span class="line">                    $(<span class="string">&quot;#eid&quot;</span>).prop(<span class="string">&quot;value&quot;</span>, eid);</span><br><span class="line">                    $(<span class="string">&quot;#sessionId&quot;</span>).prop(<span class="string">&quot;value&quot;</span>, fp);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                count ++;</span><br><span class="line">                <span class="built_in">setTimeout</span>(<span class="string">&#x27;loginGetEid(&#x27;</span>+count+<span class="string">&#x27;)&#x27;</span>, <span class="number">300</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">            $(<span class="string">&quot;#eid&quot;</span>).prop(<span class="string">&quot;value&quot;</span>, <span class="string">&quot;unknown&quot;</span>);</span><br><span class="line">            $(<span class="string">&quot;#sessionId&quot;</span>).prop(<span class="string">&quot;value&quot;</span>, <span class="string">&quot;unknown&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="string">&#x27;loginGetEid(0)&#x27;</span>, <span class="number">1000</span>); <span class="comment">//1s后执行此方法，可能为了节省轮询的资源（用户不会那么快扫码完成）</span></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>分析：淘宝网页版的扫码登录，选用了Ajax短轮询技术，完成server向web client的推送。淘宝大约是5s的短轮询，京东登录是大约3s的短轮询。选择使用Ajax短轮询的原因：</p>
+<ul>
+<li>淘宝、京东网页版需要很高的浏览器兼容性。</li>
+<li>与巨量用户在网页端的图片浏览和查询相比，3s和5s一次的短轮询占用带宽很小，而且扫码登录的实时性也不要求太高。在需求的范围内，节省资源。</li>
+</ul>
+<h2 id="3-3-微信网页版"><a href="#3-3-微信网页版" class="headerlink" title="3.3 微信网页版"></a>3.3 微信网页版</h2><p>微信网页版的扫码登录功能，由图可知，使用的是25s的长轮询。<br><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81/%E5%BE%AE%E4%BF%A1%E7%BD%91%E9%A1%B5%E7%89%88%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95.png" alt="微信网页版扫码登录"></p>
+<p>微信网页版通信功能，也是基于长轮询实现。并未采用websocket，个人认为是考虑到 兼容性，和一定程度的实时性。（并未求证，截止2020.4.27日，已经无法登录微信网页版）</p>
+<h2 id="3-4-webSocket应用"><a href="#3-4-webSocket应用" class="headerlink" title="3.4 webSocket应用"></a>3.4 webSocket应用</h2><ul>
+<li>社交订阅</li>
+<li>多玩家游戏</li>
+<li>协同编辑/编程</li>
+<li>点击流数据</li>
+<li>股票基金报价w</li>
+<li>体育实况更新</li>
+<li>多媒体聊天</li>
+<li>基于位置的应用</li>
+<li>在线教育</li>
+</ul>
+<p>上述应用领域，都是在考虑实时性较高的情况下，使用webSocket。</p>
+<blockquote>
+<p>后文：同时代的技术，没有优劣之分，只有适不适合需求的区别。并非实时性越强越好，有时候需要考虑较多其他的因素。</p>
+</blockquote>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/web/wa-lo-comet/#artrelatedtopics">Comet：基于 HTTP 长连接的“服务器推”技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2017/05/server-sent_events.html">Server-Sent Events 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2017/05/websocket.html">WebSocket 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://colobu.com/2015/02/27/WebSockets-tutorial-on-Wildfly-8/">Java WebSocket教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1589934">说说微信和淘宝扫码登录背后的实现原理</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2020/04/25/webPushTec/" data-id="ckebizjww001x647k70qhf5lk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/29/threadLearn1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          多线程与高并发（一）线程的基本概念
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/03/24/Mourning/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">纪念徐中华老师</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

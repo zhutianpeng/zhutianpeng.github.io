@@ -1,8 +1,348 @@
-{%- extends "_layout.swig" -%}
-{%- import '_macro/post.swig' as post_template -%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{%- block title -%} {{ page.title }} - {{ config.title }} {%- endblock -%}
+  
+  <title>设计模式（三）行为型 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文是参照 图说设计模式和 设计模式总结的设计模式学习系列博客（三）。 一. 观察者模式1. 定义 一对多依赖关系，subject的state一旦改变，所有observers均会受到通知，做出响应  又叫做发布-订阅（Publish&#x2F;Subscribe）模式、模型-视图（Model&#x2F;View）模式、源-监听器（Source&#x2F;Listener）模式或从属者（Dependents）模式。  分类：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式（三）行为型">
+<meta property="og:url" content="ztxpp.cc/2019/10/22/designPattern3/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="本文是参照 图说设计模式和 设计模式总结的设计模式学习系列博客（三）。 一. 观察者模式1. 定义 一对多依赖关系，subject的state一旦改变，所有observers均会受到通知，做出响应  又叫做发布-订阅（Publish&#x2F;Subscribe）模式、模型-视图（Model&#x2F;View）模式、源-监听器（Source&#x2F;Listener）模式或从属者（Dependents）模式。  分类：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191021220805.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191022161431.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191023153455.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191023155255.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/photo_2019-10-24_16-24-41.jpg">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191024163248.png">
+<meta property="article:published_time" content="2019-10-22T12:25:40.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191021220805.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{%- block content -%}
-  {{ post_template.render(page) }}
-{%- endblock -%}
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-designPattern3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/10/22/designPattern3/" class="article-date">
+  <time datetime="2019-10-22T12:25:40.000Z" itemprop="datePublished">2019-10-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      设计模式（三）行为型
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文是参照 <a target="_blank" rel="noopener" href="https://design-patterns.readthedocs.io/zh_CN/latest/index.html">图说设计模式</a>和 <a target="_blank" rel="noopener" href="http://www.phperz.com/article/15/0814/148654.html">设计模式</a>总结的设计模式学习系列博客（三）。</p>
+<h1 id="一-观察者模式"><a href="#一-观察者模式" class="headerlink" title="一. 观察者模式"></a>一. 观察者模式</h1><h2 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h2><ul>
+<li><p>一对多依赖关系，subject的state一旦改变，所有observers均会受到通知，做出响应</p>
+</li>
+<li><p>又叫做发布-订阅（Publish/Subscribe）模式、模型-视图（Model/View）模式、源-监听器（Source/Listener）模式或从属者（Dependents）模式。</p>
+</li>
+<li><p>分类：</p>
+<ul>
+<li>push模式：subject向observer推送主题的详细信息，不管观察者是否需要，推送的信息通常是主题对象的全部或部分数据。</li>
+<li>pull模式：subject推送少量信息，observer接收到通知，如果需要，自行去拉取</li>
+<li>区分：update()方法传递了参数的：push。</li>
+</ul>
+</li>
+<li><p>应用：典型的MVC设计模式是基于 观察者模式， model是subject，view是observer，controller是两者之间的中介mediator。当model数据改变时，view将自动改变其显示内容。</p>
+</li>
+</ul>
+<h2 id="2-类图"><a href="#2-类图" class="headerlink" title="2. 类图"></a>2. 类图</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191021220805.png" alt="观察者模式"></p>
+<h2 id="3-实例"><a href="#3-实例" class="headerlink" title="3. 实例"></a>3. 实例</h2><ul>
+<li>类图中拉取模型的<a target="_blank" rel="noopener" href="https://github.com/zhutianpeng/design-pattern-example/tree/master/src/ObserverPattern/example">例子</a>： </li>
+<li>使用jdk自带的observer包的:<a target="_blank" rel="noopener" href="https://github.com/zhutianpeng/design-pattern-example/tree/master/src/ObserverPattern/defaultClass">例子</a> </li>
+</ul>
+<h1 id="二-策略模式"><a href="#二-策略模式" class="headerlink" title="二.策略模式"></a>二.策略模式</h1><h2 id="1-定义-1"><a href="#1-定义-1" class="headerlink" title="1. 定义"></a>1. 定义</h2><ul>
+<li>不用硬编码（if…else; 或者将方法放在一个类中，用写死的方法名称调用），怎么管理“算法簇”</li>
+<li>将每一个算法封装在一个类中，称一个“策略”,为了保证策略有规范，实现同一个 “策略接口”</li>
+<li>官方定义：策略模式(Strategy Pattern)：定义一系列算法，将每一个算法封装起来，并让它们可以相互替换。策略模式让算法独立于使用它的客户而变化，也称为政策模式(Policy)。</li>
+<li>角色：<ul>
+<li>Context: 环境类</li>
+<li>Strategy: 抽象策略类</li>
+<li>ConcreteStrategy: 具体策略类</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-举例"><a href="#2-举例" class="headerlink" title="2. 举例"></a>2. 举例</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191022161431.png" alt="策略模式举例"></p>
+<ul>
+<li><p>三种不同的策略实现自同一个接口，Context含有这个策略，但是执行方法是由策略类的实现类来控制。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> OperationAdd()); <span class="comment">//这里也可以改成反射调用，根据策略名称来调用</span></span><br><span class="line">System.out.println(<span class="string">&quot;10 + 5 = &quot;</span> + context.executeStrategy(<span class="number">10</span>, <span class="number">5</span>));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/zhutianpeng/design-pattern-example/tree/master/src/StrategyPattern">示例代码</a></p>
+</li>
+<li><p>实用：</p>
+<ul>
+<li>策略模式包含了几个相同的策略类，可以配合工厂模式使用，利用工厂模式生产出对应的策略。</li>
+<li>如果算法是由几个小算法模块流程串联起来的，可以用将Context中保存一个策略的list,循环执行。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-应用"><a href="#3-应用" class="headerlink" title="3.应用"></a>3.应用</h2><ul>
+<li>诸葛亮的锦囊妙计，每一个锦囊就是一个策略。 </li>
+<li>旅行的出游方式，选择骑自行车、坐汽车，每一种旅行方式都是一个策略。 </li>
+<li>JAVA AWT 中的 LayoutManager。</li>
+</ul>
+<h1 id="3-状态模式"><a href="#3-状态模式" class="headerlink" title="3. 状态模式"></a>3. 状态模式</h1><h2 id="1-定义-2"><a href="#1-定义-2" class="headerlink" title="1. 定义"></a>1. 定义</h2><ul>
+<li>一个对象在其内部状态（一个值）改变时改变它的行为</li>
+<li>省略大if…else</li>
+<li>角色<ul>
+<li>Context 环境类：就是状态管理器(state Manager), 可以在环境类中对状态进行<strong>切换</strong>操作。</li>
+<li>State 抽象类</li>
+<li>具体State实现类</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-类图-1"><a href="#2-类图-1" class="headerlink" title="2. 类图"></a>2. 类图</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191023153455.png" alt="状态模式"></p>
+<ul>
+<li>Context<ul>
+<li>持有State状态</li>
+<li>changeState() 在环境类中可以切换状态</li>
+<li>reuqest() 调用具体状态的方法</li>
+</ul>
+</li>
+<li>State<ul>
+<li>handle() 该状态实现类根据自己的状态处理的方法</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-举例"><a href="#3-举例" class="headerlink" title="3. 举例"></a>3. 举例</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191023155255.png" alt="TCP statePattern"></p>
+<ul>
+<li>适合于状态转移的场景</li>
+<li>工作流：尚未办理，正在办理，正在批示，正在审核；游戏</li>
+</ul>
+<h1 id="4-责任链模式"><a href="#4-责任链模式" class="headerlink" title="4.责任链模式"></a>4.责任链模式</h1><h2 id="1-定义-3"><a href="#1-定义-3" class="headerlink" title="1. 定义"></a>1. 定义</h2><ul>
+<li><p>每个接收者都包含对另一个接收者的引用。如果一个对象不能处理该请求，那么它会把相同的请求传给下一个接收者，依此类推。</p>
+</li>
+<li><p>职责链将请求的发送者和请求的处理者解耦，请求的发送者无需关系请求处理的细节。请求被层层传递，直到可以被处理为止。</p>
+</li>
+<li><p>在处理消息的时候以过滤很多道</p>
+</li>
+<li><p>补充：</p>
+<ul>
+<li>责任链可能是一条直线，一个环链或者树状结构的一部分。</li>
+</ul>
+</li>
+<li><p>应用：</p>
+<ul>
+<li>web中使用责任链较多，例如 Filter， 对erquest和 response的过滤。</li>
+</ul>
+</li>
+<li><p>示意图：</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/photo_2019-10-24_16-24-41.jpg" alt="责任链模式示意图"></p>
+</li>
+</ul>
+<h2 id="2-举例类图"><a href="#2-举例类图" class="headerlink" title="2. 举例类图"></a>2. 举例类图</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191024163248.png" alt="责任链模式"></p>
+<ul>
+<li>链表的方式，先建立，安插好一条责任链。</li>
+<li>关键：AbstractLogger的 Handler 里面聚合它自己，在 HanleRequest 里判断是否合适，如果没达到条件则向下传递，向谁传递之前 set 进去。</li>
+<li>也可以用一个 chainManager 来保存 这条链，而不是元素之间 串起来。 </li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/10/22/designPattern3/" data-id="ckebizjwd000q647k5bwx6l53" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          mybatis源码学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/21/designPattern2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">设计模式（二）结构型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

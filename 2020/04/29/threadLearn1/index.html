@@ -1,8 +1,297 @@
-{%- extends "_layout.swig" -%}
-{%- import '_macro/post.swig' as post_template -%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{%- block title -%} {{ page.title }} - {{ config.title }} {%- endblock -%}
+  
+  <title>多线程与高并发（一）线程的基本概念 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="多线程与高并发 的系列学习笔记，不仅仅停留在理论层面，尽量落到实地，以代码的形式实践、总结。  （一）线程的基本概念 创建线程的5种方式12345678910111213141516171819202122232425262728293031323334353637383940public class T1_HowToCreateThread &amp;#123;    static class MyT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程与高并发（一）线程的基本概念">
+<meta property="og:url" content="ztxpp.cc/2020/04/29/threadLearn1/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="多线程与高并发 的系列学习笔记，不仅仅停留在理论层面，尽量落到实地，以代码的形式实践、总结。  （一）线程的基本概念 创建线程的5种方式12345678910111213141516171819202122232425262728293031323334353637383940public class T1_HowToCreateThread &amp;#123;    static class MyT">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%8A%B6%E6%80%81.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/c1%E8%BE%93%E5%87%BA.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/win%E6%9F%A5%E7%9C%8B%E6%A0%B8%E5%BF%83.png">
+<meta property="article:published_time" content="2020-04-28T16:56:24.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%8A%B6%E6%80%81.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{%- block content -%}
-  {{ post_template.render(page) }}
-{%- endblock -%}
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-threadLearn1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/29/threadLearn1/" class="article-date">
+  <time datetime="2020-04-28T16:56:24.000Z" itemprop="datePublished">2020-04-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      多线程与高并发（一）线程的基本概念
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>多线程与高并发 的系列学习笔记，不仅仅停留在理论层面，尽量落到实地，以代码的形式实践、总结。</p>
+</blockquote>
+<p>（一）线程的基本概念</p>
+<h1 id="创建线程的5种方式"><a href="#创建线程的5种方式" class="headerlink" title="创建线程的5种方式"></a>创建线程的5种方式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">T1_HowToCreateThread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;MyThread&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRun</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;MyRun&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyCall</span> <span class="keyword">implements</span> <span class="title">Callable</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;MyCall&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//    启动线程的5种方式</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        1. 继承Thread</span></span><br><span class="line">        <span class="keyword">new</span> MyThread().start();</span><br><span class="line"><span class="comment">//        2. 实现Runnable</span></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> MyRun()).start();</span><br><span class="line"><span class="comment">//        3. Lamda表达式匿名内部类</span></span><br><span class="line">        <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Thread3&quot;</span>);</span><br><span class="line">        &#125;).start();</span><br><span class="line"><span class="comment">//        4. 带返回值的 FutureTask&lt;&gt;(Callable())</span></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> FutureTask&lt;String&gt;(<span class="keyword">new</span> MyCall())).start();</span><br><span class="line"><span class="comment">//        5. 线程池 创建的方式</span></span><br><span class="line">        ExecutorService executorService = Executors.newCachedThreadPool();</span><br><span class="line">        executorService.execute(()-&gt;&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;ThreadPool&quot;</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        executorService.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="线程的基本方法-sleep-yield-join"><a href="#线程的基本方法-sleep-yield-join" class="headerlink" title="线程的基本方法 sleep yield join"></a>线程的基本方法 sleep yield join</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">T2_Sleep_Yield_Join</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line"><span class="comment">//        testSleep();</span></span><br><span class="line"><span class="comment">//        testYield();</span></span><br><span class="line">        testJoin();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  sleep:当前线程休眠一段时间，留给其他线程运行。睡眠时间到线程复活。</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testSleep</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;A&quot;</span>+i);</span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                    Thread.sleep(<span class="number">500</span>);</span><br><span class="line">                &#125;<span class="keyword">catch</span> (InterruptedException e)&#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  yield: 当前线程从Running-&gt;Ready，然后和其他线程同时开始争夺资源，让出CPU，重新竞争。</span></span><br><span class="line"><span class="comment">//  可能是当前线程继续运行，更大可能是重等待队列中选出一个线程来运行。</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testYield</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;A&quot;</span>+i);</span><br><span class="line">                <span class="keyword">if</span>(i%<span class="number">10</span>==<span class="number">0</span>)&#123;</span><br><span class="line">                    Thread.yield();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;-------B&quot;</span>+i);</span><br><span class="line">                <span class="keyword">if</span>(i%<span class="number">10</span>==<span class="number">0</span>)&#123;</span><br><span class="line">                    Thread.yield();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//    join: t1正在运行，t2.join(),这时t1会等t2运行完再执行。（自己join自己没有意义）</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testJoin</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Thread t1 = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">           <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">20</span>;i++)&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;A&quot;</span>+i);</span><br><span class="line">               <span class="keyword">try</span>&#123;</span><br><span class="line">                   Thread.sleep(<span class="number">50</span>);</span><br><span class="line">               &#125;<span class="keyword">catch</span> (InterruptedException e)&#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Thread t2 = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                t1.join();</span><br><span class="line">            &#125;<span class="keyword">catch</span> (InterruptedException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">25</span>;i++)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;B&quot;</span>+i);</span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                    Thread.sleep(<span class="number">50</span>);</span><br><span class="line">                &#125;<span class="keyword">catch</span> (InterruptedException e)&#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="线程的六种状态"><a href="#线程的六种状态" class="headerlink" title="线程的六种状态"></a>线程的六种状态</h1><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%8A%B6%E6%80%81.png" alt="线程的六种状态"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">T3_ThreadState</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Thread t = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">           System.out.println(Thread.currentThread().getName() + <span class="string">&quot;: &quot;</span>+ Thread.currentThread().getState());  <span class="comment">// RUNNABLE</span></span><br><span class="line">           <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>; i++)&#123;</span><br><span class="line">               <span class="keyword">try</span>&#123;</span><br><span class="line">                   Thread.sleep(<span class="number">500</span>);</span><br><span class="line">               &#125;<span class="keyword">catch</span> (InterruptedException e)&#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(i);</span><br><span class="line">           &#125;</span><br><span class="line">        &#125;，“<span class="number">0</span>”);</span><br><span class="line">        System.out.println(<span class="string">&quot;new线程的状态: &quot;</span>+t.getState());</span><br><span class="line">        t.start();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                Thread.sleep(<span class="number">500</span>); </span><br><span class="line">            &#125;<span class="keyword">catch</span> (InterruptedException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">             System.out.println(<span class="string">&quot;线程0的状态: &quot;</span>+t.getState()+<span class="string">&quot;  currentThread:&quot;</span>+Thread.currentThread().getName() + <span class="string">&quot; currentThreadState: &quot;</span>+ Thread.currentThread().getState());</span><br><span class="line">            <span class="comment">//此处时而显示  线程0的状态: RUNNABLE ， 时而显示 线程0的状态: TIMED_WAITING</span></span><br><span class="line">            <span class="comment">//最终将显示： 线程0的状态: TERMINATED</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/c1%E8%BE%93%E5%87%BA.png" alt="状态输出"></p>
+<ul>
+<li>New: Thread t = new Thread()。 线程被创建出来就是New状态。</li>
+<li>RUNNABLE: 线程在线程调度器执行的状态。（可以看到1处，主线程和0线程同时处于RUNNABLE状态，如果是单核CPU,那么可以猜想得知：0线程是处于Ready，main线程是Running；我的测试机是多核CPU, 两者的状态未知，可以都处于Running。）</li>
+<li>TIMED_WAITING: Thread.sleep(xx)。 在0线程sleep的时候，0线程即处于TIMED_WAITING状态，其状态与main线程是否sleep无关。</li>
+</ul>
+<blockquote>
+<p>可见多线程的运行，跟机器的CPU的核数有关系。单核CPU采用时间片轮转方式来实现并发，而多核CPU能实现真正的并行。</p>
+</blockquote>
+<h1 id="并发、并行"><a href="#并发、并行" class="headerlink" title="并发、并行"></a>并发、并行</h1><ul>
+<li>并发（concurrency ）：时间段内有很多的线程或进程在执行，但何时间点上都只有一个在执行，多个线程或进程争抢时间片轮流执行，使其在宏观上具有多个线程同步执行的效果。</li>
+<li>并行（parallelism ）：时间段和同一时间点上都有多个线程或进程在执行。</li>
+</ul>
+<h1 id="单核、多核"><a href="#单核、多核" class="headerlink" title="单核、多核"></a>单核、多核</h1><p>都是一个CPU，不同的是每个CPU上的核心数。一个核心只能同时执行一个线程。</p>
+<ul>
+<li><p>单核：（并发）</p>
+<p>  单核CPU上运行的多线程程序, 同一时间只能一个线程在跑, 系统帮你切换线程而已, 系统给每个线程分配时间片来执行, 每个时间片大概10ms左右, 看起来像是同时跑, 但实际上是每个线程跑一点点就换到其它线程继续跑，效率不会有提高，切换线程反倒会增加开销。</p>
+</li>
+<li><p>多核：（并行）</p>
+<p>  多核CPU是多个CPU的替代方案，同时也减少了功耗。可以真正意义上做到并行。</p>
+<ul>
+<li>物理核：物理核心数量=CPU数(机器实装的CPU数)*每个CPU的核心数</li>
+<li>虚拟核：所谓的4核8线程，4核指的是物理核心，通过超线程技术，用一个物理核模拟两个虚拟核，每个核两个线程，总数为8线程（逻辑处理器）。</li>
+</ul>
+<p>windows下通过指令查看CPU个数和物理核心与线程数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> # 查看cpu个数</span><br><span class="line">systeminfo</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> # 查看细节信息</span><br><span class="line">wmic</span><br><span class="line">cpu get *</span><br><span class="line"># 或者：cpu get NumberOfCores, NumberOfLogicalProcessors</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<div align="center">
+<img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%BA%BF%E7%A8%8B/win%E6%9F%A5%E7%9C%8B%E6%A0%B8%E5%BF%83.png" ><br>
+<sup>NumberOfCores 物理核心,  NumberOfLogicalProcessors 线程数（逻辑处理器）</sup>
+</div>
+
+<p>不同核数和任务适合的线程数：</p>
+<ul>
+<li>多核CPU——计算密集型任务:此时要尽量使用多线程，可以提高任务执行效率，例如加密解密，数据压缩解压缩（视频、音频、普通数据），否则只能使一个核心满载，而其他核心闲置。</li>
+<li>单核CPU——计算密集型任务：此时的任务已经把CPU资源100%消耗了，就没必要也不可能使用多线程来提高计算效率了；如果要做人机交互，最好还是要用多线程，避免用户没法对计算机进行操作。</li>
+<li>单核CPU——IO密集型任务，使用多线程还是为了人机交互方便。</li>
+<li>多核CPU——IO密集型任务，这就更不用说了，跟单核时候原因一样。（防止单线程由于IO阻塞）</li>
+</ul>
+<p>参考资料：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8132ebc8e99d">进程和线程、并行和并发、单核和多核CPU</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ksws0292756/article/details/79119961">Windows下查看电脑的CPU个数，核心数，线程数</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2020/04/29/threadLearn1/" data-id="ckebizjwp001j647kgeha49w9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/30/threadLearn2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          多线程与高并发（二）Synchronized关键字
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/25/webPushTec/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">服务器推送技术</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

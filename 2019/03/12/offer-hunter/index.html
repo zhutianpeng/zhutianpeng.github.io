@@ -1,8 +1,604 @@
-{%- extends "_layout.swig" -%}
-{%- import '_macro/post.swig' as post_template -%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{%- block title -%} {{ page.title }} - {{ config.title }} {%- endblock -%}
+  
+  <title>求生之路 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Tencent_2019.3.12_person_round1_fail 算法题Given a collection of intervals, merge all overlapping intervals.  1234Example:Input: [[1,3],[2,6],[8,10],[15,18]]Output: [[1,6],[8,10],[15,18]]Explanation: Sin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="求生之路">
+<meta property="og:url" content="ztxpp.cc/2019/03/12/offer-hunter/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="Tencent_2019.3.12_person_round1_fail 算法题Given a collection of intervals, merge all overlapping intervals.  1234Example:Input: [[1,3],[2,6],[8,10],[15,18]]Output: [[1,6],[8,10],[15,18]]Explanation: Sin">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wiki.jikexueyuan.com/project/java-vm/images/javadebug.gif">
+<meta property="og:image" content="http://wiki.jikexueyuan.com/project/java-vm/images/jvmdebug.gif">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20190905163425.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/9fb03b0fb1f09c2813910bee0518c37.png">
+<meta property="article:published_time" content="2019-03-12T08:58:47.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="面试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wiki.jikexueyuan.com/project/java-vm/images/javadebug.gif">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{%- block content -%}
-  {{ post_template.render(page) }}
-{%- endblock -%}
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-offer-hunter" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/12/offer-hunter/" class="article-date">
+  <time datetime="2019-03-12T08:58:47.000Z" itemprop="datePublished">2019-03-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      求生之路
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Tencent-2019-3-12-person-round1-fail"><a href="#Tencent-2019-3-12-person-round1-fail" class="headerlink" title="Tencent_2019.3.12_person_round1_fail"></a>Tencent_2019.3.12_person_round1_fail</h1><ol>
+<li>算法题<br>Given a collection of intervals, merge all overlapping intervals.  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Example:</span><br><span class="line">Input: [[1,3],[2,6],[8,10],[15,18]]</span><br><span class="line">Output: [[1,6],[8,10],[15,18]]</span><br><span class="line">Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>来源 <a target="_blank" rel="noopener" href="https://leetcode.com/problems/merge-intervals/">56. Merge Intervals</a><br>答案：  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Interval&gt; <span class="title">merge</span><span class="params">(List&lt;Interval&gt; intervals)</span> </span>&#123;</span><br><span class="line">    List&lt;Interval&gt; result = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">    Collections.sort(intervals, <span class="keyword">new</span> Comparator&lt;Interval&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Interval o1, Interval o2)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(o1.start&lt;o2.start)&#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(o1.start==o2.start)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(result.size()==<span class="number">0</span>)&#123;</span><br><span class="line">            result.add(intervals.get(i));</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            Interval temp=overlap(result.get(j),intervals.get(i));</span><br><span class="line">            <span class="keyword">if</span>(temp==<span class="keyword">null</span>)&#123;</span><br><span class="line">                result.add(intervals.get(i));</span><br><span class="line">                j++;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                result.remove(j);</span><br><span class="line">                result.add(temp);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Interval <span class="title">overlap</span><span class="params">(Interval o1, Interval o2)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(o2.start&gt;o1.end)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(o1.end&gt;=o2.end)&#123;</span><br><span class="line">        <span class="keyword">return</span> o1;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Interval(o1.start,o2.end);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>进程间切换，操作系统发生了哪些步骤</p>
+</li>
+<li><p>进程间通信的方式</p>
+</li>
+<li><p>java里面继承和实现的区别，细节  </p>
+<p> 继承：  </p>
+<ul>
+<li><p>只能继承一个父类。 （如果能继承两个父类，会出现“致命的钻石问题”）</p>
+</li>
+<li><p>子类拥有父类非 private 的属性、方法; 子类可以重写父类的方法。</p>
+</li>
+<li><p>静态方法：</p>
+<p>实现：</p>
+</li>
+<li><p>可以实现多个接口。</p>
+</li>
+<li><p>实现类必须实现接口的所有方法。  </p>
+</li>
+</ul>
+</li>
+</ol>
+<ol start="5">
+<li>数据库的三大范式，细节解释  </li>
+</ol>
+<h1 id="360-2019-3-20-person-round3-AC"><a href="#360-2019-3-20-person-round3-AC" class="headerlink" title="360_2019.3.20_person_round3_AC"></a>360_2019.3.20_person_round3_AC</h1><ol>
+<li>项目相关：  </li>
+</ol>
+<ul>
+<li>能力开放平台，鉴权；如何实现正常调用程序（而非测试环节）；计费。</li>
+</ul>
+<ol start="2">
+<li>jvm：</li>
+</ol>
+<ul>
+<li>java内存模型</li>
+<li>java垃圾收集：判断对象是否被回收，类的卸载，垃圾收集算法，垃圾收集器，G1垃圾收集器</li>
+</ul>
+<h1 id="Alibaba-新零售平台事业部-2019-3-22-phone-round1-AC"><a href="#Alibaba-新零售平台事业部-2019-3-22-phone-round1-AC" class="headerlink" title="Alibaba_新零售平台事业部_2019.3.22_phone_round1_AC"></a>Alibaba_新零售平台事业部_2019.3.22_phone_round1_AC</h1><ol>
+<li><p>自我介绍  </p>
+</li>
+<li><p>项目相关：</p>
+</li>
+</ol>
+<ul>
+<li><p>背景、解决的问题、系统的架构设计、模块分层</p>
+</li>
+<li><p>redis：1. 为什么选取redis而不选择其他 消息中间件； 2. MySQL数据库与Redis缓存数据一致性问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">问题1：选取redis而不选择其他 消息中间件</span><br><span class="line"></span><br><span class="line"> 优点：</span><br><span class="line">    1. 将redis 当做轻量级的队列服务使用，与RabbitMQ相比：</span><br><span class="line">        对于RabbitMQ和Redis的入队和出队操作，各执行100万次，每10万次记录一次执行时间。</span><br><span class="line">        测试数据分为128Bytes、512Bytes、1K和10K四个不同大小的数据。实验表明：</span><br><span class="line">        入队时，当数据比较小时Redis的性能要高于RabbitMQ，而如果数据大小超过了10K，Redis则慢的无法忍受；</span><br><span class="line">        出队时，无论数据大小，Redis都表现出非常好的性能，而RabbitMQ的出队性能则远低于Redis。</span><br><span class="line"></span><br><span class="line">    2. redis 消息推送是基于分布式 pub&#x2F;sub，多用于实时性较高的消息推送，并不保证可靠。</span><br><span class="line">        其他的mq和kafka保证可靠但有一些延迟（非实时系统没有保证延迟）</span><br><span class="line"></span><br><span class="line"> 缺点：</span><br><span class="line">    1. redis 消息推送不可靠，redis-pub&#x2F;sub断电就清空。</span><br><span class="line">    2. redis-pub&#x2F;sub没有提供“分组”这个概念, 与kafka相比，</span><br><span class="line">        比如kafka中发布一个东西，多个订阅者可以分组，同一个组里只有一个订阅者会收到该消息，</span><br><span class="line">        这样可以用作负载均衡</span><br><span class="line"></span><br><span class="line">问题2：MySQL数据库与Redis缓存数据一致性问题：</span><br><span class="line"></span><br><span class="line">  解决方式：</span><br><span class="line">    增：写数据只写db</span><br><span class="line">    改：更新数据先更新db，再失效cache</span><br><span class="line">    查：读数据，先读cache，未命中读db，写入cache</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="3">
+<li>基础知识：   </li>
+</ol>
+<ul>
+<li><p>解决hash冲突的方法：拉链法，rehash:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1.『hash』: 翻译为“散列”，就是把任意长度的输入，通过散列算法，变成固定长度的输出，该输出就是散列值。</span><br><span class="line">这种转换是一种压缩映射，散列值的空间通常远小于输入的空间，不同的输入可能会散列成相同的输出，所以不可能从散列值来唯一的确定输入值。</span><br><span class="line"></span><br><span class="line">2. 『hash冲突』：根据key即经过一个函数f(key)得到的结果的作为地址去存放当前的key value键值对(这个是hashmap的存值方式)，但是却发现算出来的地址上已经有人先来了。</span><br><span class="line"></span><br><span class="line">3. 『解决hash冲突的办法』：</span><br><span class="line">开放地址法：(open addressing)</span><br><span class="line">    线性探测法(linear probing)、平方探测法(Quadratic probing)、双散列算法(double hashing)、再散列（rehashing）</span><br><span class="line">分离链表法：（Sperate Chaining）【拉链法】</span><br><span class="line">    将相应位置上冲突的所有关检测存储在同一个单链表中</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>TCP的可靠性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. 『差错控制』:</span><br><span class="line">TCP通过 校验和 、 确认 以及 超时重传 这三个工具，来检测和重传受到损伤的报文段、并重传丢失的报文段、保存失序到底的报文段直至缺失的报文段到期，以及检测和丢弃重复的报文段。</span><br><span class="line"></span><br><span class="line">2. 『流量控制』:</span><br><span class="line">TCP通过接收窗口的大小来调节生产者产生数据的速度和消费者消耗数据的数据，达到一种动态平衡。</span><br><span class="line"></span><br><span class="line">3.『拥塞控制』:</span><br><span class="line">慢开始、拥塞避免、快重传、快恢复</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>java的类加载机制，一个应用从启动到运行的机制</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。</span><br><span class="line"></span><br><span class="line">类从被虚拟机加载到内存中开始，到卸载出内存为止，它的生命周期经历了</span><br><span class="line">    加载（Loading）、</span><br><span class="line">    连接</span><br><span class="line">        验证（Verification）、</span><br><span class="line">        准备（Preparation）、</span><br><span class="line">        解析（Resolution）、</span><br><span class="line">    初始化（Initialization）、</span><br><span class="line">    使用（Using）</span><br><span class="line">    卸载（Unloading）</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>java的内存管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Java 的内存管理就是对象的分配和释放问题。（两部分）</span><br><span class="line"></span><br><span class="line">1. 对象的分配与存储：</span><br><span class="line">    1.1 JVM 的内存区域组成</span><br><span class="line">    1.2 各种数据类型在java中的存储：</span><br><span class="line">        在方法中声明的变量可以是基本类型的变量，也可以是引用类型的变量。</span><br><span class="line">         （1）当声明是基本类型的变量的时，其变量名及值（变量名及值是两个概念）是放在JAVA虚拟机栈中</span><br><span class="line">         （2）当声明的是引用变量时，所声明的变量（该变量实际上是在方法中存储的是内存地址值）是放在JAVA虚拟机的栈中，该变量所指向的对象是放在堆类存中的。</span><br><span class="line"></span><br><span class="line">        在类中声明的变量是成员变量，也叫全局变量，放在堆中的：</span><br><span class="line">        （1）当声明的是基本类型的变量其变量名及其值放在堆内存中的</span><br><span class="line">        （2）引用类型时，其声明的变量仍然会存储一个内存地址值，该内存地址值指向所引用的对象。引用变量名和对应的对象仍然存储在相应的堆中。</span><br><span class="line"></span><br><span class="line">2. 对象的释放（GC）:</span><br><span class="line">	2.1 如何判断对象应该被回收:</span><br><span class="line">		引用计数算法；可达性分析算法；方法区域的回收。</span><br><span class="line">	2.2 怎么回收（垃圾收集的4种算法）：</span><br><span class="line">		标记-清除；标记-整理；复制；分代收集</span><br><span class="line">	2.3 7种垃圾收集器</span><br><span class="line">		Serial,ParNew,Parallel Scavenge, Serial Old, Parallel Old, CMS, G1</span><br><span class="line">	2.4 内存分配与回收策略</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>java OOM 异常处理 （OutOfMemoryError）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">1. Java堆溢出</span><br><span class="line">    Java堆用于存储对象实例，只要不断地创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清除这些对象，对象数量达到最大堆容量限制，则发生溢出。(有点类似于“内存泄露”)</span><br><span class="line">  </span><br><span class="line">2. 虚拟机栈和本地方法栈溢出</span><br><span class="line">    StackOverFlow：线程申请的栈深度超过允许的最大深度</span><br><span class="line">    OutOfMemoryError： 虚拟机扩展时无法申请到足够的内存空间</span><br><span class="line"></span><br><span class="line">3. 方法区和运行常量池溢出</span><br><span class="line">    方法区用于存放Class的相关信息，如果运行时产生大量的类去填满方法区，就可能发生方法区的内存溢出。</span><br><span class="line">    例如主流框架Spring、Hibernate对大量的类进行增强时，利用CGLib字节码生成动态类；</span><br><span class="line">    大量JSP或动态JSP(JSP第一次运行时需要编译为Java类）。</span><br><span class="line"></span><br><span class="line">    运行时常量池：JDK7之前会有，不做研究。</span><br><span class="line"></span><br><span class="line">4. 本地直接内存溢出 </span><br><span class="line">    通过Unsafe类直接分配内存时，过大则会溢出。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>详见：<a href="http://ztxpp.cc/2019/03/23/java-OOM/">java OOM 异常处理</a></p>
+<ol start="4">
+<li>你最近在学习什么新技术？在看什么书？<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">技术层面：深入理解JVM虚拟机</span><br><span class="line">架构层面：微服务</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="Alibaba-新零售平台事业部-2019-3-28-phone-round2-AC"><a href="#Alibaba-新零售平台事业部-2019-3-28-phone-round2-AC" class="headerlink" title="Alibaba_新零售平台事业部_2019.3.28_phone_round2_AC"></a>Alibaba_新零售平台事业部_2019.3.28_phone_round2_AC</h1><ol>
+<li>Java 代码编译和执行的整个过程； 类加载机制；<br><img src="http://wiki.jikexueyuan.com/project/java-vm/images/javadebug.gif" alt="java编译过程"><br><img src="http://wiki.jikexueyuan.com/project/java-vm/images/jvmdebug.gif" alt="java字节码的执行"></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Java 代码编译和执行的整个过程,包含以下三个重要的机制：</span><br><span class="line"> 1. Java源码编译机制：</span><br><span class="line">                    分析和输入到符号表</span><br><span class="line">                    注解处理</span><br><span class="line">                    语义分析和生成 class 文件</span><br><span class="line"> 2. 类加载机制：</span><br><span class="line">                    双亲委派模型</span><br><span class="line"> 3. 类执行机制：</span><br><span class="line">                    JVM 是基于栈的体系结构来执行 class 字节码的。</span><br><span class="line">                    线程创建后，都会产生程序计数器（PC）和栈（Stack），</span><br><span class="line">                    （1）程序计数器存放下一条要执行的指令在方法内的偏移量，</span><br><span class="line">                    （2）栈中存放一个个栈帧，每个栈帧对应着每个方法的每次调用，而栈帧又是有局部变量区和操作数栈两部分组成，局部变量区用于存放方法中的局部变量和参数，操作数栈中用于存放方法执行过程中产生的中间结果。</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>两个类，类和包名完全相同，应该从classLoader上面怎么处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当项目中同时出现两个相同的名称的 类（包名、类名都相同），且 两个jar包都要引用，不能删除某个jar包的import：</span><br><span class="line">    可以利用编译器修改引入 jar包的顺序,例如用IDEA, project structure -&gt; modules -&gt; Dependencies,手动修改顺序。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>七层协议，每个有什么用；物理层有什么协议；wifi是那一层的协议；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(1) 物理层：传送数据的单位是比特。物理层的任务就是透明地传送比特流。</span><br><span class="line"></span><br><span class="line">(2) 数据链路层（链路层）：将网络层交下来的 IP 数据报组装成帧，在两个相邻结点（主机和路由器，或两个路由器）之间的链路上“透明”地传送帧中的数据。每一帧包括数据和必要的控制信息（如同步信息、地址信息、差错控制等）。</span><br><span class="line"></span><br><span class="line">(3) 网络层：使用无连接的网际协议 IP 和许多种路由选择协议。负责为分组交换网上的不同主机提供通信服务，把运输层产生的报文段或用户数据报封装成分组（也叫IP数据报或数据报）或包进行传送。网络层的另一个任务就是选择合适的路由</span><br><span class="line"></span><br><span class="line">(4) 传输层：向两个主机中进程之间的通信提供服务。</span><br><span class="line"></span><br><span class="line">(5) 应用层：直接为用户的应用进程提供服务，如 HTTP、支持文件传输的 FTP 协议等</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>加密算法有什么了解?</p>
+</li>
+<li><p>数据库事务，怎么保障的，全盘通讲。</p>
+</li>
+<li><p>数据库索引的数据结构；多列索引</p>
+</li>
+<li><p>B+树 和 B树 相比有什么优点；</p>
+</li>
+<li><p>平衡树 都有哪些？</p>
+</li>
+<li><p>Spring IOC, AOP</p>
+</li>
+<li><p>项目里面为啥使用redis</p>
+</li>
+<li><p>servlet 与 filter， 流 有什么共同点</p>
+</li>
+<li><p>设计模式 了解哪些</p>
+</li>
+<li><p>算法方面，深度学习了解多少</p>
+</li>
+<li><p>学科专业上的安排，毕设的情况</p>
+</li>
+</ol>
+<h1 id="Amazon-SDE-Software-Develop-Engineer-2019-3-29-round1-amp-2"><a href="#Amazon-SDE-Software-Develop-Engineer-2019-3-29-round1-amp-2" class="headerlink" title="Amazon_SDE(Software Develop Engineer)_2019.3.29_round1&amp;2"></a>Amazon_SDE(Software Develop Engineer)_2019.3.29_round1&amp;2</h1><h2 id="round-1-mentor面"><a href="#round-1-mentor面" class="headerlink" title="round_1 (mentor面)"></a>round_1 (mentor面)</h2><ol>
+<li><p>系统设计 （商品的推荐商品），这个功能怎么设计，细化到数据库的表结构</p>
+</li>
+<li><p>一个印象最深刻的项目（设计模式）</p>
+</li>
+<li><p>项目中 一个与老师之间battle的例子，细节</p>
+</li>
+</ol>
+<h2 id="round-2-基础面"><a href="#round-2-基础面" class="headerlink" title="round_2 (基础面)"></a>round_2 (基础面)</h2><ol>
+<li><p>讲比赛的项目（天池）</p>
+</li>
+<li><p>两道算法题</p>
+</li>
+</ol>
+<ul>
+<li>Symmetric tree： 题目和解答</li>
+<li>博物馆的max人数的时刻：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">题目：给定array[]长度为1000,  存的 &lt;a,b&gt;，意义为 a:某人进入博物馆的时刻，b 此人离开博物馆的时刻，问哪些时刻博物馆的人最多。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="Amazon-SDE-Software-Develop-Engineer-2019-4-2-offerCall-accept"><a href="#Amazon-SDE-Software-Develop-Engineer-2019-4-2-offerCall-accept" class="headerlink" title="Amazon_SDE(Software Develop Engineer)_2019.4.2_offerCall_accept"></a>Amazon_SDE(Software Develop Engineer)_2019.4.2_offerCall_accept</h2><h1 id="360-2019-4-4-IT架构中心java开发-offerCall-reject"><a href="#360-2019-4-4-IT架构中心java开发-offerCall-reject" class="headerlink" title="360_2019.4.4_IT架构中心java开发_offerCall_reject"></a>360_2019.4.4_IT架构中心java开发_offerCall_reject</h1><h1 id="Alibaba-新零售平台事业部-2019-4-4-phone-round3-AC"><a href="#Alibaba-新零售平台事业部-2019-4-4-phone-round3-AC" class="headerlink" title="Alibaba_新零售平台事业部_2019.4.4_phone_round3_AC"></a>Alibaba_新零售平台事业部_2019.4.4_phone_round3_AC</h1><ol>
+<li><p>自我介绍（着重介绍技术项目）</p>
+</li>
+<li><p>流控（redis）：</p>
+</li>
+</ol>
+<ul>
+<li>使用滑动窗口的具体业务需求是什么？</li>
+<li>三年之后的业务量大概是多少？</li>
+<li>假如 api的数量到达很大的级别（千万级），redis的性能怎么保证，怎么解决？  </li>
+</ul>
+<ol start="3">
+<li><p>权限控制 表级别的权限控制</p>
+</li>
+<li><p>协议转换 代码细节</p>
+</li>
+<li><p>程序里面发生了很多 full GC， 你该怎么解决？</p>
+</li>
+<li><p>流控的时候，redis的并发安全问题？内存的并发安全问题？</p>
+</li>
+<li><p>你的能力开放平台系统，压力测试情况，系统测试情况？</p>
+</li>
+</ol>
+<h1 id="阿里hr面准备："><a href="#阿里hr面准备：" class="headerlink" title="阿里hr面准备："></a>阿里hr面准备：</h1><ol>
+<li>做项目的启发和经历：</li>
+</ol>
+<ul>
+<li>国家电网的项目，系统的设计，微服务的思想，设计模式等等。重设计，轻实现。</li>
+</ul>
+<ol start="2">
+<li><p>流控和协议转换，是自己做的么？</p>
+</li>
+<li><p>对阿里的看法：  </p>
+</li>
+</ol>
+<ul>
+<li>让天下没有难做的生意，让天下没有难做的算法和应用。</li>
+<li>一流的企业做标准，二流三流才是做文化.品牌.解决方案。阿里有完整的java的生态体系，和自己的jvm，从几轮面试中也能看出来。阿里和我自己的技术展非常契合，我在前几年的确是想好好来阿里学习、钻研技术的。</li>
+</ul>
+<ol start="4">
+<li>一个最困难的事情，怎么解决的：</li>
+</ol>
+<ul>
+<li>系统架构的设计；能力开发平台的加班；线上线下的联调；</li>
+</ul>
+<ol start="5">
+<li>对自己的职业发展的规划：</li>
+</ol>
+<ul>
+<li>前几年先在大公司好好扎实做技术，然后做技术深入或者，转管理岗位。</li>
+</ul>
+<ol start="6">
+<li>我的缺点;我的优点：</li>
+</ol>
+<ul>
+<li>缺点：有时候太细致，较真儿。可能会拖慢项目进度。总喜欢最后check一下。不确定正确的事情也不敢下定论。</li>
+</ul>
+<ol start="7">
+<li><p>你最自豪的一件事情：</p>
+</li>
+<li><p>其他家公司的offer已有的：</p>
+</li>
+<li><p>还在面试其他家公司吗？</p>
+</li>
+<li><p>其他家的公司和阿里比较，会选择阿里吗？</p>
+</li>
+<li><p>可以选择的工作地点？</p>
+</li>
+<li><p>996怎么看待？   </p>
+</li>
+</ol>
+<h1 id="阿里hr面试-2019-4-10："><a href="#阿里hr面试-2019-4-10：" class="headerlink" title="阿里hr面试_2019.4.10："></a>阿里hr面试_2019.4.10：</h1><ol>
+<li><p>能接受在杭州工作吗？</p>
+</li>
+<li><p>女朋友有吗？女朋友的工作地点？</p>
+</li>
+<li><p>你影响最深刻的一个项目，项目的背景，你在当中承担的职责，项目中你解决的最大的一个难题。体现出你的什么品质？</p>
+</li>
+<li><p>你的优点，缺点</p>
+</li>
+</ol>
+<h1 id="京东1面-onsite-2019-9-1"><a href="#京东1面-onsite-2019-9-1" class="headerlink" title="京东1面_onsite_2019.9.1:"></a>京东1面_onsite_2019.9.1:</h1><p>主要问项目</p>
+<h1 id="京东2面-onsite-2019-9-4"><a href="#京东2面-onsite-2019-9-4" class="headerlink" title="京东2面_onsite_2019.9.4:"></a>京东2面_onsite_2019.9.4:</h1><p>面试官让从 数据库、数据结构、操作系统、网络这四个部分选择一个，我选的数据库。</p>
+<ol>
+<li>数据库索引<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">给mysql数据库的一张表，设置（a,b,c）三列的联合索引，问下列哪种情况能够用到这个索引？</span><br><span class="line">1. select * from table where a &#x3D; 1 and b &#x3D; 1 and c &#x3D; 1;</span><br><span class="line">2. select * from table where b &#x3D; 1 and c &#x3D; 1;</span><br><span class="line">3. select * from table where c &#x3D; 1;</span><br><span class="line">4. select * from table where a LIKE &#39;com%&#39;;</span><br><span class="line">5. select * from table where a LIKE &#39;%com&#39;;</span><br><span class="line">6. select * from table where md5(a) &#x3D; 1;</span><br><span class="line">7. select * from table where a &#x3D; now(); </span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>答案：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 用到   2，3 没有     &#x2F;&#x2F; 索引最左前缀匹配，原理上是符合排序，有a即用到。 </span><br><span class="line">4. 用到   5.没有用      &#x2F;&#x2F; LIKE模糊查询，右模糊用到了a的索引，左模糊就不知道怎么往b+树里面找了</span><br><span class="line">6. 没有   7.用到        &#x2F;&#x2F; 对左侧做函数操作用不了索引，对右侧做函数操作，能用索引，本质上还是在b+树里面能不能找到</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>设计数据库结构，存储 “组织架构”（树）, 满足下面三个功能，并说出算法复杂度：</li>
+</ol>
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20190905163425.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 能利用ID进行CRUD操作</span><br><span class="line">2. 找到一个节点的全路径</span><br><span class="line">3. 找到一个节点的下属所有节点</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/9fb03b0fb1f09c2813910bee0518c37.png"></p>
+<p>回答：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">法1.第一反应</span><br><span class="line">1.  O(1)的查找，增加删除节点要满足一定的约束条件</span><br><span class="line">2.  O(n)的递归方式查找： 这里指的需要n次查询</span><br><span class="line">3.  O(n)的方式循环查找： 这里指的需要n次查询</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">法2.经过提示，数据库里面可以存更多信息，即保存路径</span><br><span class="line">1. 增加节点的时候，需要先查出父节点的parent,添加到自己的parent上，O(1)</span><br><span class="line">2. O(1) 找一个节点的全路径</span><br><span class="line">3. O(1) 找到一个节点的所有子节点，一次查询可以知道结果</span><br><span class="line">eg: select * from table where parent LIKE A%;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>上十亿级别的数据，怎么做多列筛选（待整理）</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000017180119">https://segmentfault.com/a/1190000017180119</a></p>
+<p>主要方案：</p>
+<ul>
+<li>更换存储引擎，选用列式存储，hybridDB之类。</li>
+<li>采用缓存，记录中间结果。</li>
+<li>采用计算中间表，来进行保存结果。</li>
+</ul>
+<h1 id="京东hr面-他人题目-准备"><a href="#京东hr面-他人题目-准备" class="headerlink" title="京东hr面_他人题目_准备"></a>京东hr面_他人题目_准备</h1><ol>
+<li><p>自我介绍</p>
+</li>
+<li><p>个人目前面试实习情况</p>
+</li>
+</ol>
+<ul>
+<li>目前offer有阿里，面试中有京东；</li>
+</ul>
+<ol start="3">
+<li>why 京东 not others</li>
+</ol>
+<ul>
+<li><p>个人观感，更喜欢在京东上买东西，更快，更正规。</p>
+</li>
+<li><p>京东优势：</p>
+<ul>
+<li>自营型电商更有优势，阿里更多的是平台型电商</li>
+<li>最好最快的快递：物流体系更加健全。</li>
+<li>只卖真货：对于库存的把控更加严格</li>
+</ul>
+</li>
+<li><p>当马云轻轻松松赚的盆钵满盈、走上“神坛”、呼风唤雨之时，刘强东还在苦逼兮兮地和快递员们称兄道弟、打成一片。问题是，羊毛不会出在狗身上，马云虽富，却是建立在数百万商家挣扎生存的前提下；刘强东虽穷，但效率未必就不能致胜。在零售业的链条上，京东和阿里都各占一环，到底谁的模式才是更合理的资源配置模式？探讨这个问题需要对产业链的上下游进行综合分析。</p>
+</li>
+<li><p>京东供应链部门：复杂性更高，更加成熟，sku数更多</p>
+</li>
+</ul>
+<ol start="4">
+<li>个人优势</li>
+</ol>
+<ul>
+<li>怎么体现出很match<ul>
+<li>开发项目经历</li>
+<li>获奖经历</li>
+<li>更喜欢了解业务</li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li>京东企业价值观</li>
+</ol>
+<ul>
+<li>使命：科技引领生活</li>
+<li>核心价值观：<ul>
+<li>客户为先、诚信、 协作</li>
+<li>感恩 、拼搏 、担当</li>
+</ul>
+</li>
+<li>愿景<ul>
+<li>成为全球最值得信赖的企业</li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li><p>个人诚信自我评分</p>
+<p>95分</p>
+</li>
+<li><p>有什么问题</p>
+</li>
+</ol>
+<p>地点问题，换地点，换岗位的相关问题</p>
+<h1 id="京东hr面-onsite-2019-9-6"><a href="#京东hr面-onsite-2019-9-6" class="headerlink" title="京东hr面_onsite_2019.9.6"></a>京东hr面_onsite_2019.9.6</h1><ol>
+<li><p>名字的含义</p>
+</li>
+<li><p>自我介绍</p>
+</li>
+<li><p>讲讲阿里的经历，对自我的提升</p>
+</li>
+<li><p>对于互联网的负面性怎么看？人员流动性大，压力大，怎么看？</p>
+</li>
+<li><p>身边的人怎么评价你？</p>
+</li>
+</ol>
+<h1 id="拼多多1面-电话-视频-2019-9-17-耻辱之战"><a href="#拼多多1面-电话-视频-2019-9-17-耻辱之战" class="headerlink" title="拼多多1面_电话+视频_2019.9.17(耻辱之战)"></a>拼多多1面_电话+视频_2019.9.17(耻辱之战)</h1><ol>
+<li><p>数据库与消息队列，怎么保证数据正确读取时发送消息；数据存取失败时，不发送消息</p>
+</li>
+<li><p>HashMap 和 linkedHashMap的底层数据结构； hashmap线程安全怎么保证； hashmap实现LRU算法； LinkedHashMap 的LRU算法怎么保证线程安全？</p>
+</li>
+<li><p>redis在进行并发操作的时候怎么保证线程安全</p>
+</li>
+<li><p>数据库索引</p>
+</li>
+<li><p>多路归并算法</p>
+</li>
+<li><p>讲一下微服务</p>
+</li>
+<li><p>怎么实现论坛的回帖数在多线程情况下不重复</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. mysql层面： 采用 for update 操作，保证读取时，具有排它锁</span><br><span class="line"></span><br><span class="line">2. redis层面： 采用incr 原子性操作，设计一个分布式锁。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="字节跳动-北京-商业变现部门-1面-onsite-2019-9-23"><a href="#字节跳动-北京-商业变现部门-1面-onsite-2019-9-23" class="headerlink" title="字节跳动_北京_商业变现部门_1面_onsite_2019.9.23"></a>字节跳动_北京_商业变现部门_1面_onsite_2019.9.23</h1><ol>
+<li>java反射，Spring IOC</li>
+<li>线程与进程区别，用户态与内核态</li>
+<li>JVM：垃圾回收机制，垃圾回收器，java内存模型</li>
+<li>TCP四次挥手，time wait的作用，导致的问题； </li>
+<li>TCP的拥塞控制细节（四个过程）；慢开始为什么是指数型增长？</li>
+<li>HTTP的状态码分类；</li>
+<li>数据结构hash表，b+树讲解；hashmap的效率当一个节点下面的链表过长怎么优化。</li>
+<li>讲一下rocketMQ，消息中间件</li>
+<li>微服务系统之间三种通信方式的优缺点，RPC,HTTP,MQ</li>
+<li>讲一下RPC为什么比较快 &gt; 序列化</li>
+<li>讲一下项目中的dstunnel</li>
+<li>算法题：将 ../a/b/c/./d/../e/../f 优化成为 a/b/c/f </li>
+</ol>
+<h1 id="字节跳动-北京-商业变现部门-2面-onsite-2019-9-23"><a href="#字节跳动-北京-商业变现部门-2面-onsite-2019-9-23" class="headerlink" title="字节跳动_北京_商业变现部门_2面_onsite_2019.9.23"></a>字节跳动_北京_商业变现部门_2面_onsite_2019.9.23</h1><ol>
+<li>讲一下数据库索引，b树与b+树的区别</li>
+<li>数据库优化优化查询</li>
+<li>阿里的实习给你带来什么收获，层次不高面试官不开心</li>
+<li>算法题：归并两个有序链表</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/03/12/offer-hunter/" data-id="ckebizjxr003h647khcc7gw7h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/03/17/4-sort/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          java实现的排序算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/02/28/3-array/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">牛客网 &gt; leetcode &gt; 数组算法 题目总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
