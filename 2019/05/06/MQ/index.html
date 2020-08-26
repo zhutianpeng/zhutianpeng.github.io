@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>以activemq为例的消息中间件浅析 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="传统的前端向后端发起http request,后端回复http response的方式，在服务器端主动推送模型中不再适用。 传统的单体结构的项目升级为多模块的项目之后，模块与模块之间的通信方式有所改变。上述两个问题都可以用“消息中间件”的思想来解决，本文做一个基础知识的学习。并且就activemq进行一些分析和总结。   1. web项目中 server 向 client推送消息的方式调研要实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以activemq为例的消息中间件浅析">
+<meta property="og:url" content="ztxpp.cc/2019/05/06/MQ/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="传统的前端向后端发起http request,后端回复http response的方式，在服务器端主动推送模型中不再适用。 传统的单体结构的项目升级为多模块的项目之后，模块与模块之间的通信方式有所改变。上述两个问题都可以用“消息中间件”的思想来解决，本文做一个基础知识的学习。并且就activemq进行一些分析和总结。   1. web项目中 server 向 client推送消息的方式调研要实">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/MQ_1.bmp">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/MQ.png">
+<meta property="article:published_time" content="2019-05-06T08:58:47.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="中间件 - activemq">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/MQ_1.bmp">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-MQ" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/06/MQ/" class="article-date">
+  <time datetime="2019-05-06T08:58:47.000Z" itemprop="datePublished">2019-05-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      以activemq为例的消息中间件浅析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<ol>
+<li>传统的前端向后端发起http request,后端回复http response的方式，在服务器端主动推送模型中不再适用。</li>
+<li>传统的单体结构的项目升级为多模块的项目之后，模块与模块之间的通信方式有所改变。<br>上述两个问题都可以用“消息中间件”的思想来解决，本文做一个基础知识的学习。并且就activemq进行一些分析和总结。</li>
+</ol>
+</blockquote>
+<h1 id="1-web项目中-server-向-client推送消息的方式调研"><a href="#1-web项目中-server-向-client推送消息的方式调研" class="headerlink" title="1. web项目中 server 向 client推送消息的方式调研"></a>1. web项目中 server 向 client推送消息的方式调研</h1><p>要实现 服务器端推送，以及异步处理，需要使用基于mqtt的消息中间件，或者使用websocket来进行</p>
+<h1 id="2-消息队列的模型分类（JMS规范支持的消息模型）"><a href="#2-消息队列的模型分类（JMS规范支持的消息模型）" class="headerlink" title="2. 消息队列的模型分类（JMS规范支持的消息模型）"></a>2. 消息队列的模型分类（JMS规范支持的消息模型）</h1><h2 id="2-1-：-点对点（point-to-point，-queue）-vs-发布-订阅（publish-subscribe，topic）"><a href="#2-1-：-点对点（point-to-point，-queue）-vs-发布-订阅（publish-subscribe，topic）" class="headerlink" title="2.1 ： 点对点（point to point， queue） vs 发布/订阅（publish/subscribe，topic）"></a>2.1 ： 点对点（point to point， queue） vs 发布/订阅（publish/subscribe，topic）</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/MQ_1.bmp" alt="JMS规范支持的消息模型"></p>
+<p>点对点模型：queue，只能消费一次。</p>
+<ul>
+<li>定义：消息生产者生产消息发送到queue中，然后消息消费者从queue中取出并且消费消息。<br>消息被消费以后，queue中不再有存储，Queue支持存在多个消费者，但是一个消息只能被消费一次。</li>
+<li>特点：queue中不存储已被消费一次的消息。</li>
+</ul>
+<p>发布/订阅：Topic，可以重复消费：</p>
+<ul>
+<li>定义：消息生产者（发布）将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。</li>
+<li>特点1：发布到topic的消息会被所有订阅者消费。</li>
+<li>特点2：支持“订阅组”的发布订阅模式。当发布消息量过大时，采用多订阅节点组成一个订阅组来 负载均衡地分组订阅，可以简单地将消费能力进行线性扩展。</li>
+</ul>
+<h2 id="2-2-推-vs-拉"><a href="#2-2-推-vs-拉" class="headerlink" title="2.2 推 vs 拉"></a>2.2 推 vs 拉</h2><p>Push方式：由消息中间件主动地将消息推送给消费者；</p>
+<ul>
+<li>优点：尽可能快地将消息发送给消费者</li>
+<li>缺点：如果消费者的处理消息的能力很弱(一条消息需要很长的时间处理)，而消息中间件不断地向消费者Push消息，消费者的缓冲区可能会溢出。</li>
+</ul>
+<p>Pull方式：由消费者主动向消息中间件拉取消息。</p>
+<ul>
+<li>特点： 会增加消息的延迟，即消息到达消费者的时间有点长</li>
+</ul>
+<p>举例：</p>
+<ul>
+<li>ActiveMQ： 包含“推”，“拉”两种模型，较为复杂，后面详细介绍。</li>
+<li>RabbitMQ： 既支持内存队列也支持持久化队列，消费端为“推”模型，消费状态和订阅关系由服务端负责维护，消息消费完后立即删除，不保留历史消息。</li>
+<li>Kafka: 只支持消息持久化，消费端为“拉”模型，消费状态和订阅关系由客户端端负责维护，消息消费完后不会立即删除，会保留历史消息。</li>
+</ul>
+<h1 id="3-activemq浅析"><a href="#3-activemq浅析" class="headerlink" title="3. activemq浅析"></a>3. activemq浅析</h1><h2 id="3-1-名词介绍"><a href="#3-1-名词介绍" class="headerlink" title="3.1 名词介绍"></a>3.1 名词介绍</h2><p>ActiveMQ 是一个 MOM，具体来说是一个实现了 JMS 规范的系统间远程通信的消息代理。</p>
+<ul>
+<li>MOM:<ul>
+<li>面向消息中间件(Message-oriented middleware)。</li>
+<li>以分布式应用或系统中的异步、松耦合、可靠、可扩展和安全通信的一类软件。</li>
+<li>MOM 的总体思想是它作为消息发送器和消息接收器之间的消息中介,这种中介提供了一个全新水平的松耦合。</li>
+</ul>
+</li>
+<li>JMS：<ul>
+<li>Java 消息服务(Java Message Service)。java平台上有关面向 MOM 的技术规范。</li>
+<li>旨在通过提供标准的产生、发送、接收和处理消息的 API 简化企业应用的开发，类似于 JDBC 和关系型数据库通信方式的抽象。</li>
+</ul>
+</li>
+</ul>
+<p>消息队列的另外四个基本概念：分别是Provider，Domains，Connection factory，Destination。</p>
+<ul>
+<li>Provider：纯 Java 语言编写的 JMS 接口实现（eg: ActiveMQ）</li>
+<li>Domains：消息传递方式，包括点对点（P2P）、发布/订阅（Pub/Sub）两种</li>
+<li>Connection factory：客户端使用连接工厂来创建与 JMS provider 的连接</li>
+<li>Destination：消息被寻址、发送以及接收的对象</li>
+</ul>
+<h2 id="3-2-Activemq使用的通用步骤"><a href="#3-2-Activemq使用的通用步骤" class="headerlink" title="3.2 Activemq使用的通用步骤"></a>3.2 Activemq使用的通用步骤</h2><ul>
+<li>获取连接工厂</li>
+<li>使用连接工厂创建连接</li>
+<li>启动连接</li>
+<li>从连接创建会话</li>
+<li>获取 Destination</li>
+<li>创建 Producer</li>
+<li>创建 Consumer<ul>
+<li>创建 Consumer</li>
+<li>注册消息监听器（可选）</li>
+</ul>
+</li>
+<li>发送或接收 message</li>
+<li>关闭资源（connection, session, producer, consumer 等)</li>
+</ul>
+<h2 id="3-3-Activemq的-“P2P”与“Pub-Sub”的比较"><a href="#3-3-Activemq的-“P2P”与“Pub-Sub”的比较" class="headerlink" title="3.3 Activemq的 “P2P”与“Pub/Sub”的比较"></a>3.3 Activemq的 “P2P”与“Pub/Sub”的比较</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/MQ.png" alt="activemq的 “P2P”与“Pub/Sub”的比较"></p>
+<p>解释：Topic和queue的区别：</p>
+<ul>
+<li><p>对于消费者延迟启动，是否还有消息保留的问题： （本质上是消息发送的方式）</p>
+<ul>
+<li>Pub/Sub（topic）： 以 广播 的形式，通知所有在线监听的客户端有新的消息，没有监听的客户端将收不到消息；</li>
+<li>P2P（queue）：则是以点对点的形式通知多个处于监听状态的客户端中的一个</li>
+</ul>
+</li>
+<li><p>对于Broker重启时消息是否保留的问题： （本质上是持久化问题）</p>
+<ul>
+<li>P2P:<ul>
+<li>当DeliveryMode设置为NON_PERSISTENCE时，消息被保存在内存中,broker重启即消息丢失；</li>
+<li>而当DeliveryMode设置为PERSISTENCE时，消息保存在broker的相应的文件或者数据库中。broker重启不会导致消息丢失，只有P2P中消息被Consumer消费后才从broker中删除。</li>
+</ul>
+</li>
+<li>Pub/Sub模式：<ul>
+<li>当DeliveryMode设置为PERSISTENCE，且有持久订阅者(Durable Subscribers)时，Broker重启后，消息会保留。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-4-Activemq的-“推与拉”"><a href="#3-4-Activemq的-“推与拉”" class="headerlink" title="3.4 Activemq的 “推与拉”"></a>3.4 Activemq的 “推与拉”</h2><h3 id="3-4-1-ActiveMQ消息传送机制"><a href="#3-4-1-ActiveMQ消息传送机制" class="headerlink" title="3.4.1 ActiveMQ消息传送机制"></a>3.4.1 ActiveMQ消息传送机制</h3><p>prefetch limit:<br>由来：  </p>
+<ul>
+<li>生产者给消费者推送消息，消费者来不及消费，会将消息缓存在 缓冲区中，缓冲区可能有溢出的风险。prefetch limit 规定了一次可以向消费者Push(推送)多少条消息。当生产者发送的消息累计达到prefetch limit，但是消费者没有回复ack时，消息中间件将不再推送消息。</li>
+</ul>
+<p>怎么取值：  </p>
+<ul>
+<li>大于0: 是push的方式，允许消息的堆积</li>
+<li>等于1：消费者收到一条消息，如果没有处理完，回复一个ack给中间件，就没法继续推送。适用于消息的数很少(生产者生产消息的速率不快)，但是每条消息 消费者需要很长的时间处理的情况。</li>
+<li>等于0：是pull的方式了。</li>
+</ul>
+<h3 id="3-4-2-ActiveMQ的ack确认机制"><a href="#3-4-2-ActiveMQ的ack确认机制" class="headerlink" title="3.4.2 ActiveMQ的ack确认机制"></a>3.4.2 ActiveMQ的ack确认机制</h3><p>optimizeACK:<br>由来：  </p>
+<ul>
+<li>可优化的ACK”，这是ActiveMQ对于consumer在消息消费时，对消息ACK的优化选项，也是consumer端最重要的优化参数之一。</li>
+<li>只有开启了optimizeAcknowledge=true,后面的optimizeAcknowledgeTimeOut，prefetchSize，redelivery才有意义。</li>
+</ul>
+<p>作用：</p>
+<ul>
+<li>通过optimizeACK和prefetch配合，可以达成高效的消息消费模型：批量获取消息，并“延迟”确认(ACK)</li>
+</ul>
+<h3 id="3-4-3-通过prefetch与optimizeACK-实现高效消息消费模型"><a href="#3-4-3-通过prefetch与optimizeACK-实现高效消息消费模型" class="headerlink" title="3.4.3 通过prefetch与optimizeACK 实现高效消息消费模型"></a>3.4.3 通过prefetch与optimizeACK 实现高效消息消费模型</h3><p>上文看到：prefetch优化了消息传送的性能，optimizeACK优化了消息确认的性能。现在进行适用的场景分析：</p>
+<ul>
+<li><p>（consumer消费速率 &gt; producer生产速率） &amp;&amp; 消息的数量也很大：<br>  使用optimizeACK + prefetch的消费模型可以大大提升consumer的性能。</p>
+</li>
+<li><p>consumer的消费速度慢 &amp;&amp; 消息的数量也很大:<br>  prefetchSize设置过大反而不利于consumer端的负载均衡。应当使用较小的prefetch，同时关闭optimizeACK，可以让消息在多个consumer间“负载均衡”(即均匀的发送给每个consumer)</p>
+</li>
+<li><p>consumer的消费速度 &gt;&gt; producer的生产速度 &amp;&amp; 部署了多个consumer：<br>  建议开启optimizeACK，但是需要设置的prefetchSize不能过大；这样可以保证每个consumer都能有”活干”，否则将会出现一个consumer非常忙碌，但是其他consumer几乎收不到消息</p>
+</li>
+<li><p>消息很重要，不愿意接受redelivery的消息:<br>  optimizeACK=false，prefetchSize=1，解释：当optimizeACK=true时，存在这种风险（当consumer收到消息，在延迟ack的时间内，发生了故障，则其他consumer可能会受到redelivery的消息）。所以不要延迟发送ack。而prefetchSize=1则是确保消息确认收到后，再继续推送下一条消息。</p>
+</li>
+</ul>
+<h3 id="3-4-4-代码中如何使用-“推-拉”-“同步调用”和“异步调用”的比较"><a href="#3-4-4-代码中如何使用-“推-拉”-“同步调用”和“异步调用”的比较" class="headerlink" title="3.4.4 代码中如何使用 “推/拉” - “同步调用”和“异步调用”的比较"></a>3.4.4 代码中如何使用 “推/拉” - “同步调用”和“异步调用”的比较</h3><p>同步调用：</p>
+<ul>
+<li>语法： ActiveMQMessageConsumer的receive()方法。</li>
+<li>prefetch limit取值：<ul>
+<li>大于0：push</li>
+<li>等于0：pull</li>
+</ul>
+</li>
+</ul>
+<p>异步调用：</p>
+<ul>
+<li>语法： 消费者实现MessageListener接口，监听消息。</li>
+<li>prefetch limit取值：只能大于0，因为是被动监听的模式：push。</li>
+</ul>
+<h2 id="3-5-ActiveMQ的持久化方式"><a href="#3-5-ActiveMQ的持久化方式" class="headerlink" title="3.5 ActiveMQ的持久化方式"></a>3.5 ActiveMQ的持久化方式</h2><h2 id="3-6-ActiveMQ的部署模式-向高可用进发"><a href="#3-6-ActiveMQ的部署模式-向高可用进发" class="headerlink" title="3.6 ActiveMQ的部署模式 (向高可用进发)"></a>3.6 ActiveMQ的部署模式 (向高可用进发)</h2><ol>
+<li><p>单例模式</p>
+</li>
+<li><p>无共享主从模式</p>
+</li>
+<li><p>共享存储主从模式</p>
+</li>
+</ol>
+<h2 id="3-7-ActiveMQ的网络连接"><a href="#3-7-ActiveMQ的网络连接" class="headerlink" title="3.7 ActiveMQ的网络连接"></a>3.7 ActiveMQ的网络连接</h2><hr>
+<p>参考资料</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/heyutao007/article/details/50131089">消息队列的两种模式</a><br><a target="_blank" rel="noopener" href="http://www.cnblogs.com/hapjin/p/5683648.html">ActiveMQ的推拉模型</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cyfonly/p/6380860.html">成小胖学习ActiveMQ·基础篇</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/xyw_blog/article/details/9128219">ActiveMQ持久化方式</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/xyw_blog/article/details/9128219">ActiveMQ消息传送机制以及ACK机制详解</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/05/06/MQ/" data-id="ckebizjw30008647k1iaqdbpg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/16/SCM/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          供应链 - 库存管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/04/23/dynamic-program/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">动态规划</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

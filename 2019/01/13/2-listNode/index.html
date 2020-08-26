@@ -5,14 +5,19 @@
   
 
   
-  <title>Archives | Ztxpp&#39;s Blog</title>
+  <title>牛客网 &gt; leetcode &gt; 链表算法 题目总结 | Ztxpp&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Ztxpp&#39;s Blog">
-<meta property="og:url" content="ztxpp.cc/archives/index.html">
+  <meta name="description" content="链表 长度的游戏，多用快慢指针来实现，因为 2X-X &#x3D; △k， 即X&#x3D;△k，找到△k的意义，再在慢指针x上面接着做文章即可。举例 ： “链表中倒数第k个结点”，“两个链表的第一个公共结点”，“链表中环的入口结点” 指针的游戏，多加几个指针来解决问题，而不是用hashset, ArrayList 等容器来装。举例： “反转链表”，“合并两个排序的链表”，“复杂链表的复制”，“删除链表中重复的节点”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="牛客网 &gt; leetcode &gt; 链表算法 题目总结">
+<meta property="og:url" content="ztxpp.cc/2019/01/13/2-listNode/index.html">
 <meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="链表 长度的游戏，多用快慢指针来实现，因为 2X-X &#x3D; △k， 即X&#x3D;△k，找到△k的意义，再在慢指针x上面接着做文章即可。举例 ： “链表中倒数第k个结点”，“两个链表的第一个公共结点”，“链表中环的入口结点” 指针的游戏，多加几个指针来解决问题，而不是用hashset, ArrayList 等容器来装。举例： “反转链表”，“合并两个排序的链表”，“复杂链表的复制”，“删除链表中重复的节点”">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-13T11:41:13.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
 <meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="牛客网 - 链表">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
@@ -62,226 +67,121 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/09/threadLearn6/" class="archive-article-date">
-  <time datetime="2020-05-09T09:03:58.000Z" itemprop="datePublished">5月 9</time>
+        <section id="main"><article id="post-2-listNode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/13/2-listNode/" class="article-date">
+  <time datetime="2019-01-13T11:41:13.000Z" itemprop="datePublished">2019-01-13</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+    <h1 class="article-title" itemprop="name">
+      牛客网 &gt; leetcode &gt; 链表算法 题目总结
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><ul>
+<li>长度的游戏，多用快慢指针来实现，因为 2X-X = △k， 即X=△k，找到△k的意义，再在慢指针x上面接着做文章即可。举例 ： “链表中倒数第k个结点”，“两个链表的第一个公共结点”，“链表中环的入口结点”</li>
+<li>指针的游戏，多加几个指针来解决问题，而不是用hashset, ArrayList 等容器来装。举例： “反转链表”，“合并两个排序的链表”，“复杂链表的复制”，“删除链表中重复的节点”</li>
+</ul>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><p>牛客网上 <a target="_blank" rel="noopener" href="https://www.nowcoder.com/ta/leetcode">leetCode</a> 在线练习部分 全部 链表 算法汇总，索引到我的笔记</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="left">题目</th>
+<th align="left">考点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/307114?noteType=0">从尾到头打印链表</a></td>
+<td align="left">使用递归的方法，入栈，从尾到头打印连表</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/311842?noteType=0">链表中倒数第k个结点</a></td>
+<td align="left">链表，一个长度的问题，怎么找到那个 “△k” 成为了用“双点”的思路来源</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/311879?noteType=0">反转链表</a></td>
+<td align="left">想到的是用一个容器来装链表，那就不太是 最佳思路； 应当用链表来解决链表</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/316419?noteType=0">合并两个排序的链表</a></td>
+<td align="left">设置3个指针，注意应用变量的问题</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/316560?noteType=0">复杂链表的复制</a></td>
+<td align="left">用链表自己的属性来解决，先拼成一个长链表，再拆分</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/316578?noteType=0">两个链表的第一个公共结点</a></td>
+<td align="left">长度法：list1与list2的长度差很关键。先让长的走△步，然后一起遍历，第一个相同的就是要找的；时间复杂度 O(n+m)</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/316582?noteType=0">链表中环的入口结点</a></td>
+<td align="left">龟兔赛跑法（快慢指针，本质是玩长度的游戏）</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/1923750/note/detail/316634?noteType=0">删除链表中重复的节点</a></td>
+<td align="left">设置 pre ，last 指针， pre指针指向当前确定不重复的那个节点，而last指针相当于工作指针，一直往后面搜索。</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/01/13/2-listNode/" data-id="ckebizjvx0001647k7m1zett4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/16/dockerStudy/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Docker环境下前后端分离项目部署与运维(一)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/01/08/1-binaryTree/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">牛客网 &gt; leetcode &gt; 二叉树算法 题目总结</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/07/threadLearn5-2/" class="archive-article-date">
-  <time datetime="2020-05-07T15:32:21.000Z" itemprop="datePublished">5月 7</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/06/threadLearn5/" class="archive-article-date">
-  <time datetime="2020-05-06T09:37:56.000Z" itemprop="datePublished">5月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/01/threadLearn4/" class="archive-article-date">
-  <time datetime="2020-05-01T15:51:44.000Z" itemprop="datePublished">5月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/01/threadLearn3/" class="archive-article-date">
-  <time datetime="2020-04-30T16:01:09.000Z" itemprop="datePublished">5月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/04/30/threadLearn2/" class="archive-article-date">
-  <time datetime="2020-04-29T17:12:05.000Z" itemprop="datePublished">4月 30</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/04/30/threadLearn2/">多线程与高并发（二）Synchronized关键字</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/04/29/threadLearn1/" class="archive-article-date">
-  <time datetime="2020-04-28T16:56:24.000Z" itemprop="datePublished">4月 29</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/04/29/threadLearn1/">多线程与高并发（一）线程的基本概念</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/04/25/webPushTec/" class="archive-article-date">
-  <time datetime="2020-04-25T07:11:08.000Z" itemprop="datePublished">4月 25</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/04/25/webPushTec/">服务器推送技术</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/03/24/Mourning/" class="archive-article-date">
-  <time datetime="2020-03-24T07:13:10.000Z" itemprop="datePublished">3月 24</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/24/Mourning/">纪念徐中华老师</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/" class="archive-article-date">
-  <time datetime="2019-11-06T06:59:01.000Z" itemprop="datePublished">11月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/">java泛型</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/5/">5</a><a class="extend next" rel="next" href="/archives/page/2/">Next &amp;raquo;</a>
-  </nav>
 
 </section>
         

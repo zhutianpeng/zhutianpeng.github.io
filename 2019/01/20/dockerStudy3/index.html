@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Docker环境下前后端分离项目部署与运维(三) | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="为了搭建 高性能、高负载、高可用 的系统，继续本课程的学习。  第5章 搭建Redis集群5.1 Redis主从同步集群介绍Redis集群介绍： RedisCluster: 官方推荐，没有中心节点 （采用） Codis： 中间件产品，存在中心节点 Twemproxy: 中间件产品，存在中心节点（较老）  RedisCluster介绍： 无中心节点，每个节点都是可读可写，客户端与redis节点直连，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker环境下前后端分离项目部署与运维(三)">
+<meta property="og:url" content="ztxpp.cc/2019/01/20/dockerStudy3/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="为了搭建 高性能、高负载、高可用 的系统，继续本课程的学习。  第5章 搭建Redis集群5.1 Redis主从同步集群介绍Redis集群介绍： RedisCluster: 官方推荐，没有中心节点 （采用） Codis： 中间件产品，存在中心节点 Twemproxy: 中间件产品，存在中心节点（较老）  RedisCluster介绍： 无中心节点，每个节点都是可读可写，客户端与redis节点直连，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.1%20redisCluster%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.2%20%E4%B8%BB%E4%BB%8E.png">
+<meta property="og:image" content="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.2%20%E4%B8%BB%E4%BB%8E%20%E7%BB%93%E6%9E%84.png">
+<meta property="article:published_time" content="2019-01-20T14:14:43.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.1%20redisCluster%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dockerStudy3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/20/dockerStudy3/" class="article-date">
+  <time datetime="2019-01-20T14:14:43.000Z" itemprop="datePublished">2019-01-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Docker环境下前后端分离项目部署与运维(三)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>为了搭建 <strong>高性能、高负载、高可用</strong> 的系统，继续<a target="_blank" rel="noopener" href="https://coding.imooc.com/class/219.html">本课程</a>的学习。 </p>
+<h1 id="第5章-搭建Redis集群"><a href="#第5章-搭建Redis集群" class="headerlink" title="第5章 搭建Redis集群"></a>第5章 搭建Redis集群</h1><h2 id="5-1-Redis主从同步集群介绍"><a href="#5-1-Redis主从同步集群介绍" class="headerlink" title="5.1 Redis主从同步集群介绍"></a>5.1 Redis主从同步集群介绍</h2><h3 id="Redis集群介绍："><a href="#Redis集群介绍：" class="headerlink" title="Redis集群介绍："></a>Redis集群介绍：</h3><ul>
+<li>RedisCluster: 官方推荐，没有中心节点 （采用）</li>
+<li>Codis： 中间件产品，存在中心节点</li>
+<li>Twemproxy: 中间件产品，存在中心节点（较老）</li>
+</ul>
+<h3 id="RedisCluster介绍："><a href="#RedisCluster介绍：" class="headerlink" title="RedisCluster介绍："></a>RedisCluster介绍：</h3><ul>
+<li>无中心节点，每个节点都是可读可写，客户端与redis节点直连，不需要中间代理层</li>
+<li>数据可以被分片存储，每个节点存储的数据不同（与PXC集群不同）；如果一个节点挂掉了，需要有冗余节点继续提供服务（备份）。</li>
+<li>管理方便，后续可自行增加和摘除节点<br><img src="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.1%20redisCluster%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="redisCluster示意图"></li>
+</ul>
+ <a id="more"></a>
+
+
+<h3 id="RedisCluster的主从同步："><a href="#RedisCluster的主从同步：" class="headerlink" title="RedisCluster的主从同步："></a>RedisCluster的主从同步：</h3><ul>
+<li>Redis集群中的数据库赋值是通过主从同步来实现</li>
+<li>主节点（Master）把数据分发给从节点（slave）</li>
+<li>优点：高可用，Reids节点有冗余设计</li>
+</ul>
+<h3 id="RedisCluster的高可用："><a href="#RedisCluster的高可用：" class="headerlink" title="RedisCluster的高可用："></a>RedisCluster的<strong>高可用</strong>：</h3><ul>
+<li>Redis集群应该包含奇数个Master，至少有3个Master（原因：Redis集群和PXC节点有选举性，当一个节点挂掉，剩下的节点如果超过总数的一半，则通过选举选出中心节点，组成新的集群。只有2个节点则不可用）</li>
+<li>Redis集群中每个Master都应该有Slave：</li>
+</ul>
+<p><img src="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.2%20%E4%B8%BB%E4%BB%8E.png" alt="每个Master都应该有Slave"></p>
+<ul>
+<li>此处不用搭建负载均衡，工程基于Spring,已经实现了负载均衡</li>
+</ul>
+<h2 id="5-2-配置RedisCluster集群"><a href="#5-2-配置RedisCluster集群" class="headerlink" title="5.2 配置RedisCluster集群"></a>5.2 配置RedisCluster集群</h2><p>此处的架构图：</p>
+<p><img src="http://selfstudy.oss-cn-beijing.aliyuncs.com/blog/docker5-1.2%20%E4%B8%BB%E4%BB%8E%20%E7%BB%93%E6%9E%84.png" alt="架构图"></p>
+<h3 id="安装Redis镜像"><a href="#安装Redis镜像" class="headerlink" title="安装Redis镜像"></a>安装Redis镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata-master ~]# docker network create --subnet&#x3D;172.19.0.0&#x2F;16 net2</span><br><span class="line">6c0b633b58abd6bd47381840f94956c0307ce93a1aa6650c41e4034b6f1e5127</span><br><span class="line"></span><br><span class="line">[root@bigdata-master ~]# docker pull yyyyttttwwww&#x2F;redis</span><br><span class="line">[root@bigdata-master ~]# docker tag docker.io&#x2F;yyyyttttwwww&#x2F;redis redis</span><br><span class="line">[root@bigdata-master ~]# docker rmi docker.io&#x2F;yyyyttttwwww&#x2F;redis</span><br><span class="line"></span><br><span class="line">docker run -it -d --name r1 -p 5001:6379 --net&#x3D;net2 --ip 172.19.0.2 redis bash</span><br></pre></td></tr></table></figure>
+<h3 id="配置redis节点"><a href="#配置redis节点" class="headerlink" title="配置redis节点"></a>配置redis节点</h3><p>配置文件路径 /usr/redis/redis.conf，需要修改的重点配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes                       #以后台进程运行</span><br><span class="line">cluster-enabled yes                 #开启集群</span><br><span class="line">cluster-config-file nodes.conf      #集群配置文件</span><br><span class="line">cluster-node-timeout 15000          #超时时间</span><br><span class="line">appendonly yes                      #开启AOF模式（日志功能）</span><br></pre></td></tr></table></figure>
+<p><strong>注意此处需要：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1 </span><br><span class="line">改为</span><br><span class="line">bind 172.19.0.x(本虚拟机的局域网ip地址，不然后面创建redis-cluster会失败) </span><br></pre></td></tr></table></figure>
+<p>注意要删掉127.0.0.1，此处是redis的一个bug, 参照 <a target="_blank" rel="noopener" href="https://stackoverflow.com/a/53128159/8526099">stack overflow的解答方案</a>。</p>
+<p>启动redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@c265772c4715:&#x2F;# cd &#x2F;usr&#x2F;redis&#x2F;src&#x2F;</span><br><span class="line">root@c265772c4715:&#x2F;usr&#x2F;redis&#x2F;src# .&#x2F;redis-server ..&#x2F;redis.conf</span><br></pre></td></tr></table></figure>
+<p>至此，一个redis节点已经配置并启动完毕，6节点的redis集群，one is done, five to go…<br>启动剩下的5个节点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata-master ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                    PORTS                                            NAMES</span><br><span class="line">172dbca59e17        redis               &quot;bash&quot;                   19 minutes ago      Up 19 minutes             0.0.0.0:5006-&gt;6379&#x2F;tcp                           r6</span><br><span class="line">f8b0df9ab628        redis               &quot;bash&quot;                   26 minutes ago      Up 26 minutes             0.0.0.0:5005-&gt;6379&#x2F;tcp                           r5</span><br><span class="line">07767c6d2b22        redis               &quot;bash&quot;                   29 minutes ago      Up 29 minutes             0.0.0.0:5004-&gt;6379&#x2F;tcp                           r4</span><br><span class="line">94778bf771f8        redis               &quot;bash&quot;                   32 minutes ago      Up 32 minutes             0.0.0.0:5003-&gt;6379&#x2F;tcp                           r3</span><br><span class="line">b6eec374ed19        redis               &quot;bash&quot;                   37 minutes ago      Up 37 minutes             0.0.0.0:5002-&gt;6379&#x2F;tcp                           r2</span><br><span class="line">c265772c4715        redis               &quot;bash&quot;                   21 hours ago        Up 21 hours               0.0.0.0:5001-&gt;6379&#x2F;tcp                           r1</span><br><span class="line">f06d6cc4a1d1        pxc                 &quot;&#x2F;entrypoint.sh &quot;        23 hours ago        Exited (1) 22 hours ago                                                    node1</span><br><span class="line">5c0d6c170ca1        haproxy             &quot;&#x2F;docker-entrypoin...&quot;   45 hours ago        Up 45 hours               0.0.0.0:4004-&gt;3306&#x2F;tcp, 0.0.0.0:4003-&gt;8888&#x2F;tcp   h2</span><br><span class="line">fe53e56e10c3        haproxy             &quot;&#x2F;docker-entrypoin...&quot;   3 days ago          Up 3 days                 0.0.0.0:4002-&gt;3306&#x2F;tcp, 0.0.0.0:4001-&gt;8888&#x2F;tcp   h1</span><br><span class="line">58dc77c722ef        docker.io&#x2F;java      &quot;bash&quot;                   4 days ago          Exited (130) 4 days ago                                                    myjava</span><br><span class="line">[root@bigdata-master ~]#</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-redis-trib-rb"><a href="#安装-redis-trib-rb" class="headerlink" title="安装 redis-trib.rb"></a>安装 redis-trib.rb</h3><p>根据redis-trib.rb脚本（基于Ruby的redis集群命令行工具）安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#进入任意一个redis目录： docker exec -it r1 bash</span><br><span class="line">root@c265772c4715:&#x2F;# cd &#x2F;usr&#x2F;redis</span><br><span class="line">root@c265772c4715:&#x2F;# mkdir cluster</span><br><span class="line">root@c265772c4715:&#x2F;# cp &#x2F;usr&#x2F;redis&#x2F;erc&#x2F;redis-trib.rb &#x2F;usr&#x2F;redis&#x2F;cluster</span><br><span class="line">root@c265772c4715:&#x2F;# cd &#x2F;usr&#x2F;redis&#x2F;cluster</span><br><span class="line">root@c265772c4715:cluster&#x2F;# apt-get install ruby</span><br><span class="line">root@c265772c4715:cluster&#x2F;# apt-get install rubygems</span><br><span class="line">root@c265772c4715:cluster&#x2F;# gem install redis</span><br></pre></td></tr></table></figure>
+
+<p>创建redis集群</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@c265772c4715:cluster&#x2F;# .&#x2F;redis-trib.rb create --replicas 1 172.19.0.2:6379 172.19.0.3:6379 172.19.0.4:6379 172.19.0.5:6379 172.19.0.6:6379 172.19.0.7:6379 </span><br></pre></td></tr></table></figure>
+<p>这里我创建失败了，原因是之前没有在redis的配置文件里面 “bind 172.19.0.x”，修改6个节点的redis配置文件后，到如下步骤。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; Creating cluster</span><br><span class="line">&gt;&gt;&gt; Performing hash slots allocation on 6 nodes...</span><br><span class="line">Using 3 masters:</span><br><span class="line">172.19.0.2:6379</span><br><span class="line">172.19.0.3:6379</span><br><span class="line">172.19.0.4:6379</span><br><span class="line">Adding replica 172.19.0.5:6379 to 172.19.0.2:6379</span><br><span class="line">Adding replica 172.19.0.6:6379 to 172.19.0.3:6379</span><br><span class="line">Adding replica 172.19.0.7:6379 to 172.19.0.4:6379</span><br><span class="line">M: 976f833b9002bbde8b687a08c3727c5017833bdf 172.19.0.2:6379</span><br><span class="line">   slots:0-5460 (5461 slots) master</span><br><span class="line">M: e832ec72a97273963ea74c950be86158ce0fac91 172.19.0.3:6379</span><br><span class="line">   slots:5461-10922 (5462 slots) master</span><br><span class="line">M: 76f42d918ae5c85d70f0b70724e852b0ef07aae5 172.19.0.4:6379</span><br><span class="line">   slots:10923-16383 (5461 slots) master</span><br><span class="line">S: 5b0f17a4b2cc713cd11854d2a229b2d1b56de223 172.19.0.5:6379</span><br><span class="line">   replicates 976f833b9002bbde8b687a08c3727c5017833bdf</span><br><span class="line">S: 0c4b318aef032deae4f1d832e2b1ae085bdf35a9 172.19.0.6:6379</span><br><span class="line">   replicates e832ec72a97273963ea74c950be86158ce0fac91</span><br><span class="line">S: 2dc444a9321a6668f732c7b58ebf61a79f1e4fe4 172.19.0.7:6379</span><br><span class="line">   replicates 76f42d918ae5c85d70f0b70724e852b0ef07aae5</span><br><span class="line">Can I set the above configuration? (type &#39;yes&#39; to accept): yes</span><br><span class="line">&gt;&gt;&gt; Nodes configuration updated</span><br><span class="line">&gt;&gt;&gt; Assign a different config epoch to each node</span><br><span class="line">&gt;&gt;&gt; Sending CLUSTER MEET messages to join the cluster</span><br><span class="line">Waiting for the cluster to join........................................................................</span><br><span class="line">..............................................................................................</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>原因：redis集群不仅需要开通redis客户端连接的端口，而且需要开通集群总线端口，集群总线端口为redis客户端连接的端口 + 10000。如redis端口为6379，则集群总线端口为16379。故，所有服务器的点需要开通redis的客户端连接端口和集群总线端口。注意：iptables 放开，如果有安全组，也要放开这两个端口。</p>
+</blockquote>
+<p>在修改完后重新启动之前，需要连上各节点的redis-cli,进行下列清空内容，重启cluster的操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">172.19.0.2:6379&gt; flushall</span><br><span class="line">172.19.0.2:6379&gt; cluster reset</span><br></pre></td></tr></table></figure>
+
+<p>最终，创建成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Waiting for the cluster to join.....</span><br><span class="line">&gt;&gt;&gt; Performing Cluster Check (using node 172.19.0.2:6379)</span><br><span class="line">M: 976f833b9002bbde8b687a08c3727c5017833bdf 172.19.0.2:6379</span><br><span class="line">   slots:0-5460 (5461 slots) master</span><br><span class="line">M: e832ec72a97273963ea74c950be86158ce0fac91 172.19.0.3:6379</span><br><span class="line">   slots:5461-10922 (5462 slots) master</span><br><span class="line">M: 76f42d918ae5c85d70f0b70724e852b0ef07aae5 172.19.0.4:6379</span><br><span class="line">   slots:10923-16383 (5461 slots) master</span><br><span class="line">M: 5b0f17a4b2cc713cd11854d2a229b2d1b56de223 172.19.0.5:6379</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   replicates 976f833b9002bbde8b687a08c3727c5017833bdf</span><br><span class="line">M: 0c4b318aef032deae4f1d832e2b1ae085bdf35a9 172.19.0.6:6379</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   replicates e832ec72a97273963ea74c950be86158ce0fac91</span><br><span class="line">M: 2dc444a9321a6668f732c7b58ebf61a79f1e4fe4 172.19.0.7:6379</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   replicates 76f42d918ae5c85d70f0b70724e852b0ef07aae5</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line">&gt;&gt;&gt; Check for open slots...</span><br><span class="line">&gt;&gt;&gt; Check slots coverage...</span><br><span class="line">[OK] All 16384 slots covered.</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-3-测试RedisCluster集群"><a href="#5-3-测试RedisCluster集群" class="headerlink" title="5.3 测试RedisCluster集群"></a>5.3 测试RedisCluster集群</h2><p>连上r1容器，启动redis客户端，-c：是连接cluster，可存可取，并且是分片存储（Redirected to slot [15495] located at 172.19.0.4:6379，可以看出是分片到了第三个master节点在保存。）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata-master ~]# docker exec -it r1 bash</span><br><span class="line">root@c265772c4715:&#x2F;# cd usr&#x2F;redis&#x2F;src&#x2F;</span><br><span class="line">root@c265772c4715:&#x2F;usr&#x2F;redis&#x2F;src# .&#x2F;redis-cli -c -h 172.19.0.2</span><br><span class="line">172.19.0.2:6379&gt; set a 10</span><br><span class="line">-&gt; Redirected to slot [15495] located at 172.19.0.4:6379</span><br><span class="line">OK</span><br><span class="line">172.19.0.4:6379&gt;</span><br></pre></td></tr></table></figure>
+
+<p>现在进行测试，停止 r1。可以看见，172.19.0.4 fail, 172.19.0.7 升级为master。再次get a, 发现是从172.0.0.7获取到了数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata-master ~]# docker pause r3</span><br><span class="line"></span><br><span class="line">172.19.0.2:6379&gt; cluster nodes</span><br><span class="line">2dc444a9321a6668f732c7b58ebf61a79f1e4fe4 172.19.0.7:6379 master - 0 1548084429158 7 connected 10923-16383</span><br><span class="line">976f833b9002bbde8b687a08c3727c5017833bdf 172.19.0.2:6379 myself,master - 0 0 1 connected 0-5460</span><br><span class="line">5b0f17a4b2cc713cd11854d2a229b2d1b56de223 172.19.0.5:6379 slave 976f833b9002bbde8b687a08c3727c5017833bdf 0 1548084428157 4 connected</span><br><span class="line">76f42d918ae5c85d70f0b70724e852b0ef07aae5 172.19.0.4:6379 master,fail - 1548084279946 1548084275943 3 connected</span><br><span class="line">0c4b318aef032deae4f1d832e2b1ae085bdf35a9 172.19.0.6:6379 slave e832ec72a97273963ea74c950be86158ce0fac91 0 1548084428657 5 connected</span><br><span class="line">e832ec72a97273963ea74c950be86158ce0fac91 172.19.0.3:6379 master - 0 1548084430159 2 connected 5461-10922</span><br><span class="line"></span><br><span class="line">172.19.0.2:6379&gt; get a</span><br><span class="line">-&gt; Redirected to slot [15495] located at 172.19.0.7:6379</span><br><span class="line">&quot;10&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>下面恢复r3节点，查看cluster状态，发现r3节点重新上线，但是成为了slave节点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata-master ~]# docker unpause r3</span><br><span class="line">r3</span><br><span class="line"></span><br><span class="line">172.19.0.7:6379&gt; cluster nodes</span><br><span class="line">0c4b318aef032deae4f1d832e2b1ae085bdf35a9 172.19.0.6:6379 slave e832ec72a97273963ea74c950be86158ce0fac91 0 1548084694915 5 connected</span><br><span class="line">76f42d918ae5c85d70f0b70724e852b0ef07aae5 172.19.0.4:6379 slave 2dc444a9321a6668f732c7b58ebf61a79f1e4fe4 0 1548084693915 7 connected</span><br><span class="line">e832ec72a97273963ea74c950be86158ce0fac91 172.19.0.3:6379 master - 0 1548084695916 2 connected 5461-10922</span><br><span class="line">5b0f17a4b2cc713cd11854d2a229b2d1b56de223 172.19.0.5:6379 slave 976f833b9002bbde8b687a08c3727c5017833bdf 0 1548084697919 4 connected</span><br><span class="line">2dc444a9321a6668f732c7b58ebf61a79f1e4fe4 172.19.0.7:6379 myself,master - 0 0 7 connected 10923-16383</span><br><span class="line">976f833b9002bbde8b687a08c3727c5017833bdf 172.19.0.2:6379 master - 0 1548084696918 1 connected 0-5460</span><br></pre></td></tr></table></figure>
+
+<p>以上测试表明了redis-cluster具有一定的 <strong>高可用性</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/01/20/dockerStudy3/" data-id="ckebizjwf000w647k6os2eab1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/22/dockerstudy4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Docker环境下前后端分离项目部署与运维(四)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/01/17/dockerStudy2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Docker环境下前后端分离项目部署与运维(二)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -5,15 +5,22 @@
   
 
   
-  <title>Archives | Ztxpp&#39;s Blog</title>
+  <title>设计模式（一）创建型 | Ztxpp&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Ztxpp&#39;s Blog">
-<meta property="og:url" content="ztxpp.cc/archives/index.html">
+  <meta name="description" content="本文是参照 图说设计模式和 设计模式总结的设计模式学习系列博客（一）。 零. 先导知识1. 设计模式分类 2. 设计模式的六个原则 单一职责原则：  定义： 一个类或者一个接口只负责唯一项职责，尽量设计出功能单一的接口； 梗概： 职责单一 举例： 一个 getUserById的方法，不应当包含建立数据库连接、写日志等功能。   依赖倒转原则：  定义：高层模块不应该依赖低层模块具体实现，解耦高层与">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式（一）创建型">
+<meta property="og:url" content="ztxpp.cc/2019/10/20/designPattern1/index.html">
 <meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="本文是参照 图说设计模式和 设计模式总结的设计模式学习系列博客（一）。 零. 先导知识1. 设计模式分类 2. 设计模式的六个原则 单一职责原则：  定义： 一个类或者一个接口只负责唯一项职责，尽量设计出功能单一的接口； 梗概： 职责单一 举例： 一个 getUserById的方法，不应当包含建立数据库连接、写日志等功能。   依赖倒转原则：  定义：高层模块不应该依赖低层模块具体实现，解耦高层与">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191022103422.png">
+<meta property="article:published_time" content="2019-10-20T12:21:40.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
 <meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191022103422.png">
   
     <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
   
@@ -62,226 +69,97 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/09/threadLearn6/" class="archive-article-date">
-  <time datetime="2020-05-09T09:03:58.000Z" itemprop="datePublished">5月 9</time>
+        <section id="main"><article id="post-designPattern1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/10/20/designPattern1/" class="article-date">
+  <time datetime="2019-10-20T12:21:40.000Z" itemprop="datePublished">2019-10-20</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+    <h1 class="article-title" itemprop="name">
+      设计模式（一）创建型
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文是参照 <a target="_blank" rel="noopener" href="https://design-patterns.readthedocs.io/zh_CN/latest/index.html">图说设计模式</a>和 <a target="_blank" rel="noopener" href="http://www.phperz.com/article/15/0814/148654.html">设计模式</a>总结的设计模式学习系列博客（一）。</p>
+<h1 id="零-先导知识"><a href="#零-先导知识" class="headerlink" title="零. 先导知识"></a>零. 先导知识</h1><h2 id="1-设计模式分类"><a href="#1-设计模式分类" class="headerlink" title="1. 设计模式分类"></a>1. 设计模式分类</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191022103422.png" alt="设计模式"></p>
+<h2 id="2-设计模式的六个原则"><a href="#2-设计模式的六个原则" class="headerlink" title="2. 设计模式的六个原则"></a>2. 设计模式的六个原则</h2><ul>
+<li><p><strong>单一职责原则</strong>：</p>
+<ul>
+<li>定义： 一个类或者一个接口只负责唯一项职责，尽量设计出功能单一的接口；</li>
+<li>梗概： 职责单一</li>
+<li>举例： 一个 getUserById的方法，不应当包含建立数据库连接、写日志等功能。</li>
+</ul>
+</li>
+<li><p><strong>依赖倒转原则</strong>：</p>
+<ul>
+<li>定义：高层模块不应该依赖低层模块具体实现，解耦高层与低层。既面向接口编程，当实现发生变化时，只需提供新的实现类，不需要修改高层模块代码;</li>
+<li>梗概：面向接口编程</li>
+<li>举例：jdbc</li>
+</ul>
+</li>
+<li><p><strong>开放-封闭原则</strong>：</p>
+<ul>
+<li>定义：程序对外扩展开放，对修改关闭；换句话说，当需求发生变化时，我们可以通过添加新模块来满足新需求，而不是通过修改原来的实现代码来满足新需求；</li>
+<li>梗概：少改已有的代码，可以新增。 </li>
+</ul>
+</li>
+<li><p><strong>迪米特法则</strong>：</p>
+<ul>
+<li>定义：一个对象应该对其他对象保持最少的了解，尽量降低类与类之间的耦合度；</li>
+<li>梗概：解耦合</li>
+<li>举例：外观模式</li>
+</ul>
+</li>
+<li><p>里氏代换原则：所有引用基类（父类）的地方必须能透明地使用其子类的对象；</p>
+</li>
+<li><p>接口隔离原则：客户端不应该依赖它不需要的接口，一个类对另一个类的依赖应该建立在最小的接口上；</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/10/20/designPattern1/" data-id="ckebizjwb000m647k0u9fgevg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/21/designPattern2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          设计模式（二）结构型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/19/redis2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">redis系列（二）</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/07/threadLearn5-2/" class="archive-article-date">
-  <time datetime="2020-05-07T15:32:21.000Z" itemprop="datePublished">5月 7</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/06/threadLearn5/" class="archive-article-date">
-  <time datetime="2020-05-06T09:37:56.000Z" itemprop="datePublished">5月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/01/threadLearn4/" class="archive-article-date">
-  <time datetime="2020-05-01T15:51:44.000Z" itemprop="datePublished">5月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/05/01/threadLearn3/" class="archive-article-date">
-  <time datetime="2020-04-30T16:01:09.000Z" itemprop="datePublished">5月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/04/30/threadLearn2/" class="archive-article-date">
-  <time datetime="2020-04-29T17:12:05.000Z" itemprop="datePublished">4月 30</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/04/30/threadLearn2/">多线程与高并发（二）Synchronized关键字</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/04/29/threadLearn1/" class="archive-article-date">
-  <time datetime="2020-04-28T16:56:24.000Z" itemprop="datePublished">4月 29</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/04/29/threadLearn1/">多线程与高并发（一）线程的基本概念</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/04/25/webPushTec/" class="archive-article-date">
-  <time datetime="2020-04-25T07:11:08.000Z" itemprop="datePublished">4月 25</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/04/25/webPushTec/">服务器推送技术</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/03/24/Mourning/" class="archive-article-date">
-  <time datetime="2020-03-24T07:13:10.000Z" itemprop="datePublished">3月 24</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/24/Mourning/">纪念徐中华老师</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/" class="archive-article-date">
-  <time datetime="2019-11-06T06:59:01.000Z" itemprop="datePublished">11月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/">java泛型</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/5/">5</a><a class="extend next" rel="next" href="/archives/page/2/">Next &amp;raquo;</a>
-  </nav>
 
 </section>
         

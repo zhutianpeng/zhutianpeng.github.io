@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>mybatis源码学习 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="软件开发工程师进阶，必须要学会阅读源码，以mybatis的源码为例进行源码阅读的训练和学习，重点有二，一是学习mybatis的设计模式和编码方式，二是学习阅读源码的方式。参照资料：深入浅出MyBatis技术内幕  注：看源码的过程中，发现自己不熟悉的知识点： java泛型，lambda表达式，一些设计模式等。 1. 整体架构 2. 日志模块2.0 需求分析需求：  MyBatis没有提供日志的实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mybatis源码学习">
+<meta property="og:url" content="ztxpp.cc/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="软件开发工程师进阶，必须要学会阅读源码，以mybatis的源码为例进行源码阅读的训练和学习，重点有二，一是学习mybatis的设计模式和编码方式，二是学习阅读源码的方式。参照资料：深入浅出MyBatis技术内幕  注：看源码的过程中，发现自己不熟悉的知识点： java泛型，lambda表达式，一些设计模式等。 1. 整体架构 2. 日志模块2.0 需求分析需求：  MyBatis没有提供日志的实">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191105142603.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107140626.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107163632.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107173622.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191109164827.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191116144917.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191117160149.png">
+<meta property="article:published_time" content="2019-11-02T07:28:42.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191105142603.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mybatis源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time datetime="2019-11-02T07:28:42.000Z" itemprop="datePublished">2019-11-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mybatis源码学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>软件开发工程师进阶，必须要学会阅读源码，以mybatis的源码为例进行源码阅读的训练和学习，重点有二，一是学习mybatis的设计模式和编码方式，二是学习阅读源码的方式。参照资料：<a target="_blank" rel="noopener" href="https://ke.qq.com/course/435473?tuin=7b49ac1d">深入浅出MyBatis技术内幕</a></p>
+</blockquote>
+<p>注：看源码的过程中，发现自己不熟悉的知识点： java泛型，lambda表达式，一些设计模式等。</p>
+<h1 id="1-整体架构"><a href="#1-整体架构" class="headerlink" title="1. 整体架构"></a>1. 整体架构</h1><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191105142603.png" alt="mybatis整体架构"></p>
+<h1 id="2-日志模块"><a href="#2-日志模块" class="headerlink" title="2. 日志模块"></a>2. 日志模块</h1><h2 id="2-0-需求分析"><a href="#2-0-需求分析" class="headerlink" title="2.0 需求分析"></a>2.0 需求分析</h2><p>需求：</p>
+<ul>
+<li>MyBatis没有提供日志的实现类，需要接入第三方的日志组件，但第三方日志组件都有各自的Log级别，且各<br>不相同，而MyBatis统一提供了trace、debug、warn、error四个级别。</li>
+<li>自动扫描日志实现，并且第三方日志插件加载优先级如下：slf4J → commonsLoging → Log4J2 → Log4J<br>→ JdkLog;</li>
+<li>日志的使用要优雅的嵌入到主体功能中；</li>
+</ul>
+<p>解决方式：</p>
+<ul>
+<li>功能点一：client和提供者的功能相近，只是接口不匹配（第三方日志组件和），可以使用适配器模式。</li>
+<li>功能点二：通过静态代码块的形式设置日志加载优先级顺序。</li>
+<li>功能点三：运用动态代理的方式实现 日志功能优雅的嵌入到主体功能中</li>
+</ul>
+<h2 id="2-1-日志的适配器"><a href="#2-1-日志的适配器" class="headerlink" title="2.1 日志的适配器"></a>2.1 日志的适配器</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107140626.png" alt="MyBatis日志的适配器"></p>
+<p>Mybatis的日志模块采用适配器模式来进行组织，做第三方插件与目标接口之间的适配工作。诸多适配器类，实现org.apache.ibatis.logging.Log接口, 在适配器内部做了函数功能的适配，举例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Log4jjImpl 适配器类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Log4jImpl</span> <span class="keyword">implements</span> <span class="title">Log</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String FQCN = Log4jImpl.class.getName();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Logger log;   <span class="comment">// 此处的Logger 是真实提供功能的 org.apache.log4j.Logger接口</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Log4jImpl</span><span class="params">(String clazz)</span> </span>&#123;</span><br><span class="line">    log = Logger.getLogger(clazz);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isDebugEnabled</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> log.isDebugEnabled();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isTraceEnabled</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> log.isTraceEnabled();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//下面几个方法是主要转换部分，相当于把 org.apache.log4j.Logger的不同等级，</span></span><br><span class="line">  <span class="comment">// 转化为 org.apache.ibatis.logging.Log的 对应等级。其他的适配器也是类似。</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">error</span><span class="params">(String s, Throwable e)</span> </span>&#123;</span><br><span class="line">    log.log(FQCN, Level.ERROR, s, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">error</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    log.log(FQCN, Level.ERROR, s, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">debug</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    log.log(FQCN, Level.DEBUG, s, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trace</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    log.log(FQCN, Level.TRACE, s, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">warn</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    log.log(FQCN, Level.WARN, s, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Log4j2LoggerImpl应该是根据情况有两种转换方式，其中一种Log4j2AbstractLoggerImpl通过装饰者模式做了一些功能的增强，这里不做细致研究。</p>
+<h2 id="2-2-静态代码块实现加载的优先级"><a href="#2-2-静态代码块实现加载的优先级" class="headerlink" title="2.2 静态代码块实现加载的优先级"></a>2.2 静态代码块实现加载的优先级</h2><p>诸多第三方日志的加载顺序，是在MyBatis的代码中写死的！ 通过LogFactory的静态代码块来实现。 </p>
+<ul>
+<li>静态代码块是给类初始化的，而构造代码块是给对象初始化的。</li>
+<li>执行顺序： 静态代码块（JVM加载类时加载）&gt; 构造块（创建对象时加载，给这个类所有的对象使用）&gt; 构造方法（创建对象时加载，给特异性对象使用）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LogFactory类 静态代码块部分</span></span><br><span class="line">  <span class="keyword">static</span> &#123;</span><br><span class="line">    tryImplementation(LogFactory::useSlf4jLogging);</span><br><span class="line">    tryImplementation(LogFactory::useCommonsLogging);</span><br><span class="line">    tryImplementation(LogFactory::useLog4J2Logging);</span><br><span class="line">    tryImplementation(LogFactory::useLog4JLogging);</span><br><span class="line">    tryImplementation(LogFactory::useJdkLogging);</span><br><span class="line">    tryImplementation(LogFactory::useNoLogging);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    tryImplementation(LogFactory::useSlf4jLogging);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">*   上述的lamda的写法相当于一个匿名内部类（实现了Runnable的实现类），转化成下面的写法：</span></span><br><span class="line"><span class="comment">    (由于tryImplementation方法需要一个Runnable参数)</span></span><br><span class="line"><span class="comment">    tryImplementation(new Runnable() &#123;</span></span><br><span class="line"><span class="comment">      @Override</span></span><br><span class="line"><span class="comment">      public void run() &#123;</span></span><br><span class="line"><span class="comment">        LogFactory.useSlf4jLogging();</span></span><br><span class="line"><span class="comment">      &#125;</span></span><br><span class="line"><span class="comment">    &#125;);</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//    tryImplementation(()-&gt;LogFactory.useSlf4jLogging());</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-动态代理嵌入日志功能"><a href="#2-3-动态代理嵌入日志功能" class="headerlink" title="2.3 动态代理嵌入日志功能"></a>2.3 动态代理嵌入日志功能</h2><p>说道优雅的嵌入某功能，想到Spring AOP的思想，其本质是动态代理模式，参看<a href="https://ztxpp.cc/2019/10/21/designPattern2/#%E5%9B%9B-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F#JDK_PROXY_PATTERN"> 设计模式-动态代理章节</a>， MyBatis使用的是JDK动态代理模式。</p>
+<p>打印日志需求：</p>
+<ul>
+<li>在创建prepareStatement时，打印执行的SQL语句</li>
+<li>访问数据库时，打印参数的类型和值</li>
+<li>查询出结构后，打印结果数据条数</li>
+</ul>
+<p>MyBatis的jdbc包里，是这样设计的：</p>
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107163632.png" alt="MyBatis的动态代理模式"></p>
+<p>四个Logger类负责了不同时期打印信息的功能，均实现了InvocationHandler接口。观察一个connect的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Connection <span class="title">newInstance</span><span class="params">(Connection conn, Log statementLog, <span class="keyword">int</span> queryStack)</span> </span>&#123;</span><br><span class="line">  InvocationHandler handler = <span class="keyword">new</span> ConnectionLogger(conn, statementLog, queryStack);</span><br><span class="line">  ClassLoader cl = Connection.class.getClassLoader();</span><br><span class="line">  <span class="keyword">return</span> (Connection) Proxy.newProxyInstance(cl, <span class="keyword">new</span> Class[]&#123;Connection.class&#125;, handler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际生成的并不是原始的Connection接口的实现类，而是 <strong>由JDK的 Proxy类动态生成的，实现了Connection接口的，聚合了InvocationHandler接口实现类</strong> 的： $Proxy 类。</p>
+<p>这四个类之间的关联顺序如下：</p>
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107173622.png" alt="关联"></p>
+<h1 id="3-数据源模块"><a href="#3-数据源模块" class="headerlink" title="3. 数据源模块"></a>3. 数据源模块</h1><h2 id="3-0-需求分析"><a href="#3-0-需求分析" class="headerlink" title="3.0 需求分析"></a>3.0 需求分析</h2><p>数据源工厂 -&gt; 数据源 -&gt; 数据库连接</p>
+<p>DataSourceFactory -&gt; DataSource -&gt; Connection</p>
+<ul>
+<li>常见的数据源需要实现 javax.sql.DataSource接口</li>
+<li>MyBatis不但要能集成第三方的数据源组件，自身也提供了数据源的实现</li>
+<li>一般情况下，数据源的初始化过程参数较多，比较复杂,客户端不应该关注这个创建数据源的过程</li>
+</ul>
+<h2 id="3-1-由数据源工厂产生数据源"><a href="#3-1-由数据源工厂产生数据源" class="headerlink" title="3.1 由数据源工厂产生数据源"></a>3.1 由数据源工厂产生数据源</h2><ul>
+<li>工厂模式 or 简单工厂模式</li>
+</ul>
+<ol>
+<li>工厂模式的分析见这篇博客， MyBatis使用的是简单工厂模式，由数据源工厂产生数据源。只不过datasource包分为了两种产生连接的类型： Pool和 unPool。 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// UnpooledDataSourceFactory类</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">UnpooledDataSourceFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.dataSource = <span class="keyword">new</span> UnpooledDataSource();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProperties</span><span class="params">(Properties properties)</span> </span>&#123;</span><br><span class="line"><span class="comment">// 省略...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>创建对象的几种方式及其特点：</li>
+</ol>
+<ul>
+<li>new对象： 创建简单对象使用，对象创建和对象使用 混杂在一起，违反单一职责原则； 业务扩展可能修改代码，违反开闭原则</li>
+<li>反射创建对象： 同上。</li>
+<li>工厂类创建对象：提取出创建对象的同一语句，方便修改和维和。扩展时只需要增加对应的工厂，符合开闭原则。</li>
+</ul>
+<h2 id="3-2-由数据源（连接池）产生连接"><a href="#3-2-由数据源（连接池）产生连接" class="headerlink" title="3.2 由数据源（连接池）产生连接"></a>3.2 由数据源（连接池）产生连接</h2><ul>
+<li>连接池的数据结构</li>
+<li>获取连接的算法流程</li>
+</ul>
+<ol>
+<li>连接池的数据结构就是两个 ArrayList<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">数据源模块项目结构：</span><br><span class="line">datasource</span><br><span class="line">    ├─  pooled  使用连接池的包</span><br><span class="line">    │    ├─ PooledDataSourceFactory     数据源工厂类</span><br><span class="line">    │    ├─ PooledDataSource            一个简单、同步、安全的数据库连接池类</span><br><span class="line">    │    ├─ PooledConnection            使用动态代理增强的数据库连接    </span><br><span class="line">    │    └─ PoolState                   用于管理PooledConnection对象状态的组件，通过两个list分别 管理空闲状态的连接资源和活跃状态的连接资源</span><br><span class="line">    │ </span><br><span class="line">    └─  unpooled  不使用连接池的包</span><br><span class="line">         ├─ UnpooledDataSourceFactory   数据源工厂类</span><br><span class="line">         └─ UnpooledDataSource          数据库连接池类  </span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>PoolState中保存着两个List:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  空闲的连接</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">final</span> List&lt;PooledConnection&gt; idleConnections = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="comment">// 活跃的，使用中的连接</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">final</span> List&lt;PooledConnection&gt; activeConnections = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>注意点：</p>
+<ul>
+<li>使用List是因为具有先后顺序，可以记录connection的使用时间，判断是否超时，只需看队首的元素。</li>
+<li>这两个List随PoolState对象一起保存在JVM堆中，线程公有，需要注意并发问题。</li>
+</ul>
+<ol start="2">
+<li><p>获取连接的算法流程</p>
+<p> 参考这里，先略过<br> <a target="_blank" rel="noopener" href="https://blog.csdn.net/luanlouis/article/details/37671851">https://blog.csdn.net/luanlouis/article/details/37671851</a></p>
+</li>
+</ol>
+<h1 id="4-缓存模块"><a href="#4-缓存模块" class="headerlink" title="4. 缓存模块"></a>4. 缓存模块</h1><h2 id="4-1-应用：-MyBatis有两级缓存机制"><a href="#4-1-应用：-MyBatis有两级缓存机制" class="headerlink" title="4.1 应用： MyBatis有两级缓存机制"></a>4.1 应用： MyBatis有两级缓存机制</h2><ul>
+<li>一级缓存: SqlSession级别</li>
+<li>二级缓存：Mapper级别</li>
+</ul>
+<h2 id="4-2-需求分析"><a href="#4-2-需求分析" class="headerlink" title="4.2 需求分析"></a>4.2 需求分析</h2><ul>
+<li>MyBatis的缓存底层是基于Map来实现的，核心功能是从缓存中读取数据</li>
+<li>缓存模块附加了很多额外功能，如：防止缓存击穿，添加缓存清空策略（FIFO,LRU）,序列化， 日志能力，定时清空.这些功能如何添加。</li>
+<li>附加功能如何任意组合使用。</li>
+</ul>
+<h2 id="4-3-装饰器模式实现缓存模块的附加功能及其任意叠加"><a href="#4-3-装饰器模式实现缓存模块的附加功能及其任意叠加" class="headerlink" title="4.3 装饰器模式实现缓存模块的附加功能及其任意叠加"></a>4.3 装饰器模式实现缓存模块的附加功能及其任意叠加</h2><ul>
+<li><p>装饰器模式，参考<a href="https://ztxpp.cc/2019/10/21/designPattern2">这篇博客</a>。 </p>
+</li>
+<li><p>装饰器模式使用案例：IO中输入流和输出流的设计</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader bufferedReader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(<span class="keyword">new</span> FileInputStream(<span class="string">&quot;c://a.txt&quot;</span>)))</span><br></pre></td></tr></table></figure></li>
+<li><p>MyBatis的缓存模块的项目结构</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191109164827.png" alt="缓存模块：装饰者模式"></p>
+<p>  MyBatis的缓存接口Cache,有很多实现，每一个实现都是一个装饰器，对原始的Cache进行包装和功能增强。 装饰器内部含有Cache对象（接口对象，由于多态能存下任意的实现对象）。所以可以将各种装饰者进行<strong>任意叠加</strong>。</p>
+<p>  比如：</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> BlockingCache(<span class="keyword">new</span> FifoCache(<span class="keyword">new</span> LoggingCache())); <span class="comment">//伪代码</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="4-4-详细分析一个装饰者实现类：BlockingCache"><a href="#4-4-详细分析一个装饰者实现类：BlockingCache" class="headerlink" title="4.4 详细分析一个装饰者实现类：BlockingCache"></a>4.4 详细分析一个装饰者实现类：BlockingCache</h2><p>用途：防止缓存雪崩</p>
+<ul>
+<li>缓存雪崩：当缓存服务器重启或者大量缓存集中在某一个时间段失效，这样在失效的时候，也会给后端系统统造成很大的压力。</li>
+<li>缓存穿透：如果key对应的value是一定不存在的，并且对该key并发请求量很大，就会导致大量的请求在缓存中拿不到数据而去请求数据库，就会对后端系统造成很大的压力。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlockingCache</span> <span class="keyword">implements</span> <span class="title">Cache</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">long</span> timeout; <span class="comment">//设置过期时间</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Cache delegate;  <span class="comment">// 装饰者模式中的concrete impl</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">//用ConcurrentHashMap来当锁，key是缓存本身的值，value是一把重入锁</span></span><br><span class="line">  <span class="comment">// 比起直接用lock， 把缓存作为key,能减小锁粒度：</span></span><br><span class="line">  <span class="comment">//    访问同一个缓存的线程 用同一把锁; 访问不同缓存的线程，不相互影响。很聪明！</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;Object, ReentrantLock&gt; locks;  </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">BlockingCache</span><span class="params">(Cache delegate)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.delegate = delegate;</span><br><span class="line">    <span class="keyword">this</span>.locks = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> delegate.getId();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> delegate.getSize();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putObject</span><span class="params">(Object key, Object value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      delegate.putObject(key, value);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      releaseLock(key);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取缓存：</span></span><br><span class="line"><span class="comment">//    逻辑是取缓存值需要锁，取到了缓存释放锁，取不到缓存继续等待。 以此防止大量线程访问数据库（缓存雪崩）</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">getObject</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    acquireLock(key);</span><br><span class="line">    Object value = delegate.getObject(key);</span><br><span class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</span><br><span class="line">      releaseLock(key); <span class="comment">//这里表示，第一个线程如果能在缓存中找到这个元素，则释放锁；没有找到，后面的线程就别想再找到这个元素了（拿不到锁）。</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">removeObject</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// despite of its name, this method is called only to release locks</span></span><br><span class="line">    releaseLock(key);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    delegate.clear();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> ReentrantLock <span class="title">getLockForKey</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果key存在，则找到这个lock；如果不存在，则创建一把新锁（第一次访问，锁不存在，需要创建）给这个key作为value</span></span><br><span class="line">    <span class="keyword">return</span> locks.computeIfAbsent(key, k -&gt;  <span class="keyword">new</span> ReentrantLock());</span><br><span class="line">   <span class="comment">// return locks.computeIfAbsent(key, k -&gt; &#123;return new ReentrantLock();&#125;);  </span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">acquireLock</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Lock lock = getLockForKey(key);</span><br><span class="line">    <span class="keyword">if</span> (timeout &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">boolean</span> acquired = lock.tryLock(timeout, TimeUnit.MILLISECONDS);</span><br><span class="line">        <span class="keyword">if</span> (!acquired) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> CacheException(<span class="string">&quot;Couldn&#x27;t get a lock in &quot;</span> + timeout + <span class="string">&quot; for the key &quot;</span> +  key + <span class="string">&quot; at the cache &quot;</span> + delegate.getId());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> CacheException(<span class="string">&quot;Got interrupted while trying to acquire lock for key &quot;</span> + key, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      lock.lock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">releaseLock</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    ReentrantLock lock = locks.get(key);</span><br><span class="line">    <span class="keyword">if</span> (lock.isHeldByCurrentThread()) &#123;</span><br><span class="line">      lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getTimeout</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> timeout;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTimeout</span><span class="params">(<span class="keyword">long</span> timeout)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.timeout = timeout;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-5-装饰器的添加"><a href="#4-5-装饰器的添加" class="headerlink" title="4.5 装饰器的添加"></a>4.5 装饰器的添加</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在CacheBuilder中找到例子</span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> Cache <span class="title">setStandardDecorators</span><span class="params">(Cache cache)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      MetaObject metaCache = SystemMetaObject.forObject(cache);</span><br><span class="line">      <span class="keyword">if</span> (size != <span class="keyword">null</span> &amp;&amp; metaCache.hasSetter(<span class="string">&quot;size&quot;</span>)) &#123;</span><br><span class="line">        metaCache.setValue(<span class="string">&quot;size&quot;</span>, size);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (clearInterval != <span class="keyword">null</span>) &#123;</span><br><span class="line">        cache = <span class="keyword">new</span> ScheduledCache(cache); <span class="comment">//添加了ScheduledCache装饰器</span></span><br><span class="line">        ((ScheduledCache) cache).setClearInterval(clearInterval);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (readWrite) &#123;</span><br><span class="line">        cache = <span class="keyword">new</span> SerializedCache(cache); <span class="comment">//添加了SerializedCache装饰器</span></span><br><span class="line">      &#125;</span><br><span class="line">      cache = <span class="keyword">new</span> LoggingCache(cache);<span class="comment">//添加了LoggingCache装饰器</span></span><br><span class="line">      cache = <span class="keyword">new</span> SynchronizedCache(cache);<span class="comment">//添加了 SynchronizedCache装饰器</span></span><br><span class="line">      <span class="comment">//注意这里添加的SynchronizedCache装饰器，可以防止二级缓存的线程安全问题。</span></span><br><span class="line">      <span class="keyword">if</span> (blocking) &#123;</span><br><span class="line">        cache = <span class="keyword">new</span> BlockingCache(cache);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> cache;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> CacheException(<span class="string">&quot;Error building standard cache decorators.  Cause: &quot;</span> + e, e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="4-5-缓存与数据库同步机制"><a href="#4-5-缓存与数据库同步机制" class="headerlink" title="4.5 缓存与数据库同步机制"></a>4.5 缓存与数据库同步机制</h2><ul>
+<li><p>数据实时同步失效</p>
+<ul>
+<li>强一致性</li>
+<li>增：写库，更新缓存； 删：删库； 改； 查</li>
+</ul>
+</li>
+<li><p>数据准实时同步</p>
+<ul>
+<li>准一致性</li>
+</ul>
+</li>
+<li><p>任务调度更新</p>
+<ul>
+<li>最终一致性</li>
+</ul>
+</li>
+</ul>
+<h1 id="5-反射模块"><a href="#5-反射模块" class="headerlink" title="5. 反射模块"></a>5. 反射模块</h1><h2 id="5-1-反射模块概述"><a href="#5-1-反射模块概述" class="headerlink" title="5.1 反射模块概述"></a>5.1 反射模块概述</h2><p>普通ORM框架查询数据的过程：</p>
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191116144917.png" alt="orm框架的作用"></p>
+<p>反射模块的作用是后面两个部分：</p>
+<ul>
+<li>实例化目标对象</li>
+<li>对象属性的赋值</li>
+</ul>
+<p>反射核心类：</p>
+<ul>
+<li><p>ObjectFactory（接口）: 利用工厂模式创建对象的实例</p>
+</li>
+<li><p>ReflectorFactory: 利用工厂模式创建 Reflector</p>
+<ul>
+<li>Reflector： <strong>类的元数据的封装</strong>；对JDK提供的反射j进行了<strong>功能增强、性能提升</strong></li>
+</ul>
+</li>
+<li><p>ObjectWrapperFactory：ObjectWrapper 的工厂类，用于创建ObjectWrapper</p>
+<ul>
+<li>ObjectWrapper： <strong>对象的封装</strong>，抽象了对象的属性信息，他定义了一系列查询对象属性信息的方法，以及更新属性的方法</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-2-ObjectFactory"><a href="#5-2-ObjectFactory" class="headerlink" title="5.2 ObjectFactory"></a>5.2 ObjectFactory</h2><ul>
+<li>主要作用：根据Class创建对象实例</li>
+<li>反射创建实例对象的两种方式：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法1：通过class创建对象：</span></span><br><span class="line">Class classType = Class.forName(<span class="string">&quot;com.ztxpp.Person&quot;</span>);</span><br><span class="line">Object obj = classType.newInstance();</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2：通过构造器创建对象</span></span><br><span class="line">Constructor&lt;Person&gt; con = Person.class.getConstructor(String.class,<span class="keyword">int</span>.class); </span><br><span class="line">    <span class="comment">//这里的参数是构造器的入参</span></span><br><span class="line">Object obj = con.newInstance(<span class="string">&quot;lxf&quot;</span>, <span class="number">23</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>DefaultObjectFactory, ObjectFactory接口的实现类相应代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">create</span><span class="params">(Class&lt;T&gt; type, List&lt;Class&lt;?&gt;&gt; constructorArgTypes,List&lt;Object&gt;constructorArgs)</span> </span>&#123;</span><br><span class="line">  Class&lt;?&gt; classToCreate = resolveInterface(type);</span><br><span class="line">  <span class="comment">// we know types are assignable</span></span><br><span class="line">  <span class="keyword">return</span> (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>  &lt;T&gt; <span class="function">T <span class="title">instantiateClass</span><span class="params">(Class&lt;T&gt; type, List&lt;Class&lt;?&gt;&gt; constructorArgTypes,List&lt;Object&gt; constructorArgs)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    Constructor&lt;T&gt; constructor;</span><br><span class="line">    <span class="comment">//如果创建对象时没有传参数，直接用默认构造器创建对象：</span></span><br><span class="line">    <span class="keyword">if</span> (constructorArgTypes == <span class="keyword">null</span> || constructorArgs == <span class="keyword">null</span>) &#123;</span><br><span class="line">      constructor = type.getDeclaredConstructor();</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> constructor.newInstance();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (Reflector.canControlMemberAccessible()) &#123;</span><br><span class="line">          <span class="comment">//如果构造器是private，暴力方式变成 public：</span></span><br><span class="line">          constructor.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">          <span class="keyword">return</span> constructor.newInstance();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果创建对象时传了参数：</span></span><br><span class="line">    constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(<span class="keyword">new</span> Clas[constructorArgTypes.size()]));</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> constructor.newInstance(constructorArgs.toArray(<span class="keyword">new</span> Object[constructorArgs.siz()]));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">      <span class="keyword">if</span> (Reflector.canControlMemberAccessible()) &#123;</span><br><span class="line">        constructor.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">return</span> constructor.newInstance(constructorArgs.toArray(<span class="keyword">new</span> Objec[constructorArgs.size()]));</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    String argTypes = Optional.ofNullable(constructorArgTypes).orElseGe(Collections::emptyList)</span><br><span class="line">        .stream().map(Class::getSimpleName).collect(Collectors.joining(<span class="string">&quot;,&quot;</span>));</span><br><span class="line">    String argValues = Optional.ofNullable(constructorArgs).orElseGe(Collections::emptyList)</span><br><span class="line">        .stream().map(String::valueOf).collect(Collectors.joining(<span class="string">&quot;,&quot;</span>));</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ReflectionException(<span class="string">&quot;Error instantiating &quot;</span> + type + <span class="string">&quot; with invalid types (&quot;</span> +argTypes + <span class="string">&quot;) or values (&quot;</span> + argValues + <span class="string">&quot;). Cause: &quot;</span> + e, e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解析接口类型，用对应的实现类类型替代</span></span><br><span class="line"><span class="comment">// 引用： 在面向对象的开发中我们会提倡面对接口而不是面向具体实现的编程原则，但是在创建对象时则必须指定一个具体的类，为了解决这个问题，mybatis对常用的集合超类指定了具体的实现类：</span></span><br><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; resolveInterface(Class&lt;?&gt; type) &#123;</span><br><span class="line">  Class&lt;?&gt; classToCreate;</span><br><span class="line">  <span class="keyword">if</span> (type == List.class || type == Collection.class || type == Iterable.class) &#123;</span><br><span class="line">    classToCreate = ArrayList.class;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == Map.class) &#123;</span><br><span class="line">    classToCreate = HashMap.class;</span><br><span class="line">  &#125; else if (type == SortedSet.class) &#123; // issue #510 Collections Support</span><br><span class="line">    classToCreate = TreeSet.class;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == Set.class) &#123;</span><br><span class="line">    classToCreate = HashSet.class;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    classToCreate = type;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> classToCreate;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reflectTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">  ObjectFactory objectFactory= <span class="keyword">new</span> DefaultObjectFactory();</span><br><span class="line">  TestUserPojo testUserPojo = objectFactory.create(TestUserPojo.class);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 成功创建对象...</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="5-3-Reflector-amp-amp-ReflectorFactory"><a href="#5-3-Reflector-amp-amp-ReflectorFactory" class="headerlink" title="5.3 Reflector &amp;&amp; ReflectorFactory"></a>5.3 Reflector &amp;&amp; ReflectorFactory</h2><ol>
+<li>Reflector： <strong>类的元数据的封装</strong>；对JDK提供的反射j进行了<strong>功能增强、性能提升</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Reflector</span> </span>&#123;</span><br><span class="line"><span class="comment">//POJO类的元数据</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;?&gt; type; <span class="comment">//类型</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String[] readablePropertyNames; <span class="comment">//属性有get方法</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String[] writablePropertyNames; <span class="comment">//属性有set方法</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Invoker&gt; setMethods = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">// 保存get方法： &lt;id, getId()&gt;</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Invoker&gt; getMethods = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">// 保存set方法： &lt;id, setId()&gt;</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Class&lt;?&gt;&gt; setTypes = <span class="keyword">new</span> HashMap&lt;&gt;();  <span class="comment">// set方法的入参类型：&lt;id, Long&gt;</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Class&lt;?&gt;&gt; getTypes = <span class="keyword">new</span> HashMap&lt;&gt;();  <span class="comment">// get方法的返回参数：&lt;id, Long&gt;</span></span><br><span class="line">  <span class="keyword">private</span> Constructor&lt;?&gt; defaultConstructor; <span class="comment">// 默认的构造方法</span></span><br><span class="line">  </span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码可见，Reflector实际是对 bean的类的封装。 在MyBatis启动时，就已经将bean对象的元数据加载带 Reflector中了，当通过反射调用方法，或者属性时，其实是从Reflector的容器中获取的。这样提高了jdk原始反射的性能和效率。 – “空间换时间”</p>
+<ol start="2">
+<li><p>ReflectorFactory: 的实现类 DefaultReflectorFactory</p>
+<ul>
+<li>工厂模式，将reflector的创建和使用分开了</li>
+<li>用线程安全的Map做缓存，在MyBatis刚启动的时候，将所有的bean用reflector封装起来，并且保存在这个ConcurrentHashMap中。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用这个线程安全的Map做缓存</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;Class&lt;?&gt;, Reflector&gt; reflectorMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Reflector <span class="title">findForClass</span><span class="params">(Class&lt;?&gt; type)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (classCacheEnabled) &#123; <span class="comment">//如果缓存打开</span></span><br><span class="line">    <span class="comment">//computeIfAbsent方法的含义： ConcurrentHashMap 中找到则返回；找不到则创建新的，填入type对应的value中，然后返回</span></span><br><span class="line">    <span class="keyword">return</span> reflectorMap.computeIfAbsent(type, Reflector::<span class="keyword">new</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Reflector(type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reflectorFactoryTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">  ReflectorFactory reflectorFactory = <span class="keyword">new</span> DefaultReflectorFactory();</span><br><span class="line">  Reflector reflector = reflectorFactory.findForClass(TestUserPojo.class);</span><br><span class="line">  Constructor&lt;?&gt; constructor = reflector.getDefaultConstructor();</span><br><span class="line">  String[] getablePropertyNames = reflector.getGetablePropertyNames();</span><br><span class="line">  String[] setablePropertyNames = reflector.getSetablePropertyNames();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-4-ObjectWrapper"><a href="#5-4-ObjectWrapper" class="headerlink" title="5.4 ObjectWrapper"></a>5.4 ObjectWrapper</h2><ul>
+<li>主要作用：为对象实例赋值</li>
+<li>主要方式：采用反射方式，获取set方法，来进行赋值</li>
+</ul>
+<h2 id="5-5-MetaObject-amp-amp-SystemMetaObject"><a href="#5-5-MetaObject-amp-amp-SystemMetaObject" class="headerlink" title="5.5 MetaObject &amp;&amp; SystemMetaObject"></a>5.5 MetaObject &amp;&amp; SystemMetaObject</h2><p>采用门面模式，包装上述核心类，提供给外部使用反射模块的功能</p>
+<p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191117160149.png" alt="门面模式"></p>
+<p>SystemMetaObject中包含了MetaObject，将上述过程在内部完成，用静态方法的形式对外界提供简单易用的接口：</p>
+<p>采用门面模式之前：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">objectWrapperTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">  ObjectFactory objectFactory= <span class="keyword">new</span> DefaultObjectFactory();</span><br><span class="line">  TestUserPojo testUserPojo = objectFactory.create(TestUserPojo.class);</span><br><span class="line">  ReflectorFactory reflectorFactory = <span class="keyword">new</span> DefaultReflectorFactory();</span><br><span class="line">  MetaObject metaObject = MetaObject.forObject(testUserPojo,objectFactory,<span class="keyword">new</span> DefaultObjectWrapperFactory(),reflectorFactory);</span><br><span class="line">  ObjectWrapper wrapper = <span class="keyword">new</span> BeanWrapper(metaObject,testUserPojo);</span><br><span class="line"></span><br><span class="line">  PropertyTokenizer prop = <span class="keyword">new</span> PropertyTokenizer(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">  wrapper.set(prop,<span class="string">&quot;ztxpp&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>采用门面模式之后：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">systemMetaObjectTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">  TestUserPojo testUserPojo = SystemMetaObject.DEFAULT_OBJECT_FACTORY.create(TestUserPojo.class);</span><br><span class="line">  MetaObject metaObject = SystemMetaObject.forObject(testUserPojo);</span><br><span class="line">  metaObject.setValue(<span class="string">&quot;name&quot;</span>,<span class="string">&quot;a&#x27;ming&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-6-模拟Mybatis使用反射模块"><a href="#5-6-模拟Mybatis使用反射模块" class="headerlink" title="5.6 模拟Mybatis使用反射模块"></a>5.6 模拟Mybatis使用反射模块</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reflectTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">  TestUserPojo testUserPojo = SystemMetaObject.DEFAULT_OBJECT_FACTORY.creat(TestUserPojo.class);</span><br><span class="line">  MetaObject metaObject = SystemMetaObject.forObject(testUserPojo);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//1,从数据库获取数据(模拟)</span></span><br><span class="line">  Map&lt;String, Object&gt; dbResult = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">  dbResult.put(<span class="string">&quot;id&quot;</span>,<span class="keyword">new</span> Long(<span class="number">1</span>));</span><br><span class="line">  dbResult.put(<span class="string">&quot;name&quot;</span>,<span class="string">&quot;ztxpp&quot;</span>);</span><br><span class="line">  dbResult.put(<span class="string">&quot;good_student&quot;</span>,<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//2. 从xml文件获取映射规则（模拟）</span></span><br><span class="line">  Map&lt;String,String&gt; mapper = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">  mapper.put(<span class="string">&quot;id&quot;</span>,<span class="string">&quot;id&quot;</span>);</span><br><span class="line">  mapper.put(<span class="string">&quot;name&quot;</span>,<span class="string">&quot;name&quot;</span>);</span><br><span class="line">  mapper.put(<span class="string">&quot;goodStudent&quot;</span>,<span class="string">&quot;good_student&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//3. 使用反射模块将数据生成pojo对象</span></span><br><span class="line">  <span class="keyword">for</span> (String key : mapper.keySet()) &#123;</span><br><span class="line">    String propName = key;</span><br><span class="line">    Object propValue = dbResult.get(mapper.get(key));</span><br><span class="line">    metaObject.setValue(propName,propValue);</span><br><span class="line">  &#125;</span><br><span class="line">  System.out.println(metaObject.getOriginalObject());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>后记：<br>Mybatis的源码量较大，这次学习只涉及到：日志模块、数据源模块、缓存模块、反射模块 这四个模块，甚至没有涉及到源码的运行流程，只是停留在基础组件层。 学习源码的过程先看文档，再分层，然后梳理流程找入口，最后多调试。这只是开始，后续需要学习jdk并发部分和Spring的源码。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" data-id="ckebizjxn003e647kfpt74shm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          java泛型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/22/designPattern3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">设计模式（三）行为型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

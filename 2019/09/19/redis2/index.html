@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>redis系列（二） | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="为了深入学习 redis相关知识 的系统，开始了享学课堂的学习。 注：仅用于个人的学习记录。 3. redis五种数据类型的应用1. String应用1. INCR原子性操作： 文章浏览数 ++ ：在多操作（先读再写）的情况下不会重复出错（需要保证操作的原子性） 论坛回帖数 ++ ：先进行redis中的帖子数 INCR, 会返回加完的值，然后去写库，保证不会有重复的帖子序号出现。  2. 数据库主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis系列（二）">
+<meta property="og:url" content="ztxpp.cc/2019/09/19/redis2/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="为了深入学习 redis相关知识 的系统，开始了享学课堂的学习。 注：仅用于个人的学习记录。 3. redis五种数据类型的应用1. String应用1. INCR原子性操作： 文章浏览数 ++ ：在多操作（先读再写）的情况下不会重复出错（需要保证操作的原子性） 论坛回帖数 ++ ：先进行redis中的帖子数 INCR, 会返回加完的值，然后去写库，保证不会有重复的帖子序号出现。  2. 数据库主">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-19T07:53:55.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-redis2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/19/redis2/" class="article-date">
+  <time datetime="2019-09-19T07:53:55.000Z" itemprop="datePublished">2019-09-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      redis系列（二）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>为了深入学习 <strong>redis相关知识</strong> 的系统，开始了<a target="_blank" rel="noopener" href="https://ke.qq.com/course/442946?tuin=7b6410e7">享学课堂</a>的学习。 注：仅用于个人的学习记录。</p>
+<h1 id="3-redis五种数据类型的应用"><a href="#3-redis五种数据类型的应用" class="headerlink" title="3. redis五种数据类型的应用"></a>3. redis五种数据类型的应用</h1><h2 id="1-String应用"><a href="#1-String应用" class="headerlink" title="1. String应用"></a>1. String应用</h2><h3 id="1-INCR原子性操作："><a href="#1-INCR原子性操作：" class="headerlink" title="1. INCR原子性操作："></a>1. INCR原子性操作：</h3><ul>
+<li>文章浏览数 ++ ：在多操作（先读再写）的情况下不会重复出错（需要保证操作的原子性）</li>
+<li>论坛回帖数 ++ ：先进行redis中的帖子数 INCR, 会返回加完的值，然后去写库，保证不会有重复的帖子序号出现。</li>
+</ul>
+<h3 id="2-数据库主键自增的实现（类似auto-increment）"><a href="#2-数据库主键自增的实现（类似auto-increment）" class="headerlink" title="2. 数据库主键自增的实现（类似auto increment）"></a>2. 数据库主键自增的实现（类似auto increment）</h3><ul>
+<li>redis是单线程模型，如果大量的请求（比如10万）同时到达，都要获取自己的序号（主键），redis会排队执行，但是速度较慢。 解决方法是： 在web server前端加上nginx分流，分到不同的server上，再去请求redis的时候，redis直接返回1<del>1000个序号给server1,并缓存在server本地（预生成），redis返回 1001</del>2000给server2,并缓存在server2上… 这样可以节省redis的吞吐量。</li>
+</ul>
+<h3 id="3-session共享"><a href="#3-session共享" class="headerlink" title="3. session共享"></a>3. session共享</h3><ul>
+<li>session信息存在redis里，多台机器能获取到一个用户的同一个session信息。</li>
+</ul>
+<h3 id="4-分布式锁"><a href="#4-分布式锁" class="headerlink" title="4. 分布式锁"></a>4. 分布式锁</h3><ul>
+<li><p>问题：为了分布式中解决重复调用的问题（可能是调用一个远端的服务）。（单机中的防止重复调用，直接加锁，比如synchronized即可，但是无法解决分布式环境下的问题。）</p>
+</li>
+<li><p>解决：将单机的锁升级为分布式锁。 -&gt; 使用redis实现分布式锁。</p>
+</li>
+<li><p>设计：</p>
+<ul>
+<li>加锁： SETNX + 缓存有效期 </li>
+<li>解锁： LUA脚本</li>
+</ul>
+</li>
+<li><p>解释： </p>
+<ul>
+<li><p>锁的表示【SETNX】： set if not exist, 成功插入则返回1， key存在则返回0。 以此作为锁，set成功则拿到锁；失败则表示锁此时被人占用。</p>
+</li>
+<li><p>解决死锁【缓存有效期】：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setnx ticket 123615243123654 px 1;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>表示这把锁最长维持1s，需要在这段时间能完成业务，否则自动key失效，相当于自动是释放了锁
+- 解锁【lua脚本】：主要为了保持操作的整体原子性，包含三个操作：
+    - 获取数据
+    - 判断一致性
+    - 删除数据</code></pre>
+<ul>
+<li>实现：</li>
+</ul>
+<p>RedisLock实现Lock接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisLock</span> <span class="keyword">implements</span> <span class="title">Lock</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String  KEY = <span class="string">&quot;LOCK_KEY&quot;</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Resource</span></span><br><span class="line">	<span class="keyword">private</span> JedisConnectionFactory factory;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ThreadLocal&lt;String&gt; local = <span class="keyword">new</span> ThreadLocal&lt;String&gt;();</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="comment">//阻塞式的加锁</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">//1.尝试加锁</span></span><br><span class="line">		<span class="keyword">if</span>(tryLock())&#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//2.加锁失败，当前任务休眠一段时间</span></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			Thread.sleep(<span class="number">10</span>);<span class="comment">// 性能浪费</span></span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//3.递归调用，再次去抢锁</span></span><br><span class="line">		lock();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="comment">//阻塞式加锁,使用setNx命令返回OK的加锁成功，并生产随机值</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">//产生随机值，标识本次锁编号</span></span><br><span class="line">		String uuid = UUID.randomUUID().toString();</span><br><span class="line">		Jedis jedis = (Jedis) factory.getConnection().getNativeConnection();</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * key:我们使用key来当锁</span></span><br><span class="line"><span class="comment">		 * uuid:唯一标识，这个锁是我加的，属于我</span></span><br><span class="line"><span class="comment">		 * NX：设入模式【SET_IF_NOT_EXIST】--仅当key不存在时，本语句的值才设入</span></span><br><span class="line"><span class="comment">		 * PX：给key加有效期</span></span><br><span class="line"><span class="comment">		 * 1000：有效时间为 1 秒</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		String ret = jedis.set(KEY, uuid,<span class="string">&quot;NX&quot;</span>,<span class="string">&quot;PX&quot;</span>,<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//设值成功--抢到了锁</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="string">&quot;OK&quot;</span>.equals(ret))&#123;</span><br><span class="line">			local.set(uuid);<span class="comment">//抢锁成功，把锁标识号记录入本线程--- Threadlocal</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//key值里面有了，我的uuid未能设入进去，抢锁失败</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//正确解锁方式</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">//读取lua脚本</span></span><br><span class="line">		String script = FileUtils.getScript(<span class="string">&quot;unlock.lua&quot;</span>);</span><br><span class="line">		<span class="comment">//获取redis的原始连接</span></span><br><span class="line">		Jedis jedis = (Jedis) factory.getConnection().getNativeConnection();</span><br><span class="line">		<span class="comment">//通过原始连接连接redis执行lua脚本</span></span><br><span class="line">		jedis.eval(script, Arrays.asList(KEY), Arrays.asList(local.get()));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//-----------------------------------------------</span></span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Condition <span class="title">newCondition</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> time, TimeUnit unit)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lockInterruptibly</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">lock.lock();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//模拟卖票业务处理</span></span><br><span class="line">        amount++;</span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">    lock.unlock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解锁的Lua脚本：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.call(<span class="string">&quot;get&quot;</span>,KEYS[<span class="number">1</span>]) == ARGV[<span class="number">1</span>] <span class="keyword">then</span> </span><br><span class="line">    <span class="keyword">return</span> redis.call(<span class="string">&quot;del&quot;</span>,KEYS[<span class="number">1</span>]) </span><br><span class="line"><span class="keyword">else</span> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span> </span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Hash应用"><a href="#2-Hash应用" class="headerlink" title="2. Hash应用"></a>2. Hash应用</h2><h3 id="1-保存对象-gt-淘宝购物车的实现"><a href="#1-保存对象-gt-淘宝购物车的实现" class="headerlink" title="1. 保存对象 -&gt; 淘宝购物车的实现"></a>1. 保存对象 -&gt; 淘宝购物车的实现</h3><ul>
+<li><p>需求：</p>
+<ul>
+<li>全选购物车中的商品</li>
+<li>获取购物车商品数量</li>
+<li>删除购物车商品</li>
+<li>增加或减少商品的数量</li>
+</ul>
+</li>
+<li><p>使用hash来实现，当前登录用户ID号做为KEY，商品ID号为Field, 加入购物车数量为value。</p>
+</li>
+<li><p>每次增量操作时，先操作db，再操作redis，保证原子性；其中操作redis的方式就是上述提供的操作hash的方式。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hmset user:001 product:01 1 product:02 1</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="3-List应用"><a href="#3-List应用" class="headerlink" title="3. List应用"></a>3. List应用</h2><h3 id="1-实现队列、栈、阻塞队列"><a href="#1-实现队列、栈、阻塞队列" class="headerlink" title="1. 实现队列、栈、阻塞队列"></a>1. 实现队列、栈、阻塞队列</h3><ul>
+<li>队列：lpush + rpop</li>
+<li>栈：lpush + lpop</li>
+<li>阻塞队列 blockqueue：lpush + brpop （监听，如果有消息就接收，没有消息阻塞监听）</li>
+</ul>
+<h3 id="2-微信公众号订阅文章（用redis的List实现）"><a href="#2-微信公众号订阅文章（用redis的List实现）" class="headerlink" title="2. 微信公众号订阅文章（用redis的List实现）"></a>2. 微信公众号订阅文章（用redis的List实现）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># CSDN发布了一条消息ID为999</span><br><span class="line">lpush mes:004 999</span><br><span class="line"></span><br><span class="line"># 男子别输在说话上也发布了一条消息ID为1000</span><br><span class="line">lpush mes:004 1000</span><br><span class="line"></span><br><span class="line"># 那么左图Lison老师的微信消息列表实现如下</span><br><span class="line">lrange mes:004 0 5</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Set应用"><a href="#4-Set应用" class="headerlink" title="4. Set应用"></a>4. Set应用</h2><h3 id="1-set集合的元素不重复性"><a href="#1-set集合的元素不重复性" class="headerlink" title="1. set集合的元素不重复性"></a>1. set集合的元素不重复性</h3><ul>
+<li><p>抽奖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 当Lison点击参与抽奖时，数据放入set集合</span><br><span class="line">sadd act:001  004</span><br><span class="line"></span><br><span class="line"># 开始抽奖2名中奖者</span><br><span class="line">srandmember act:001 2 或 spop act:001 2</span><br><span class="line"></span><br><span class="line"># 查看有多少用户参加了本次抽奖</span><br><span class="line">smembers act:001</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>点赞：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 张三用户ID 为userId:01</span><br><span class="line"></span><br><span class="line"># 1）张三对消息ID008点赞</span><br><span class="line">sadd zan:008  userId:01</span><br><span class="line"></span><br><span class="line"># 2)张三取消了对消息008的点赞</span><br><span class="line">srem zan:008  userId:01</span><br><span class="line"></span><br><span class="line"># 3）检查用户是否点过赞</span><br><span class="line">sismember zan:008  userId:01</span><br><span class="line"></span><br><span class="line"># 4）获取消息ID008所有的点赞用户列表</span><br><span class="line">smembers zan:008</span><br><span class="line"></span><br><span class="line"># 5）消息ID008的点赞数计算</span><br><span class="line">scard zan:008</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>投票，黑名单</p>
+</li>
+</ul>
+<h3 id="2-set集合的集合运算性（交并补）"><a href="#2-set集合的集合运算性（交并补）" class="headerlink" title="2. set集合的集合运算性（交并补）"></a>2. set集合的集合运算性（交并补）</h3><p>举例：微博的微关系设计</p>
+<h2 id="5-zset应用"><a href="#5-zset应用" class="headerlink" title="5. zset应用"></a>5. zset应用</h2><h3 id="1-zset的集合性"><a href="#1-zset的集合性" class="headerlink" title="1. zset的集合性"></a>1. zset的集合性</h3><ul>
+<li>元素不重复</li>
+<li>集合运算：交并补</li>
+</ul>
+<h3 id="2-zset的可排序性"><a href="#2-zset的可排序性" class="headerlink" title="2. zset的可排序性"></a>2. zset的可排序性</h3><p>百度热度榜,排行榜</p>
+<ul>
+<li>将日期作为Key</li>
+<li>按照点赞数排序,解决数据库排序的压力</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 1)点击话题</span><br><span class="line">zincrby topic:20190912 1 军嫂怒怼张馨予</span><br><span class="line"></span><br><span class="line"># 2)右侧排行实现,展示今日前9排名</span><br><span class="line">zrevrange  topic:20190912 0 20  withscores</span><br><span class="line"></span><br><span class="line"># 3)统计近3日点击数据(集合运算：求并集)</span><br><span class="line">zunionstore topic:3day 3  topic:20190910  topic:20190911 topic:20190912</span><br><span class="line"></span><br><span class="line"># 4)展示近3日的排行前9名</span><br><span class="line">zrevrange topic:20190910-20190912 0 9  withscores</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/09/19/redis2/" data-id="ckebizjwm001d647k192k17u9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/20/designPattern1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          设计模式（一）创建型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/17/redis/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">redis系列（一）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

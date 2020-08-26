@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 注解 （Annotation） | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="annotation: Java 注解用于为 Java 代码提供元数据。作为元数据，注解不直接影响你的代码执行，但也有一些类型的注解实际上可以用于这一目的。Java 注解是从 Java5 开始添加到 Java 的。下文为关于 annotation的学习笔记。  1. annotation的地位 annotation是一种类型，跟Class, Interface一个层面上的定义。 annotati">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 注解 （Annotation）">
+<meta property="og:url" content="ztxpp.cc/2019/05/19/annotation/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="annotation: Java 注解用于为 Java 代码提供元数据。作为元数据，注解不直接影响你的代码执行，但也有一些类型的注解实际上可以用于这一目的。Java 注解是从 Java5 开始添加到 Java 的。下文为关于 annotation的学习笔记。  1. annotation的地位 annotation是一种类型，跟Class, Interface一个层面上的定义。 annotati">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/%E6%B3%A8%E8%A7%A3.png">
+<meta property="article:published_time" content="2019-05-19T10:30:02.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/%E6%B3%A8%E8%A7%A3.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-annotation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/19/annotation/" class="article-date">
+  <time datetime="2019-05-19T10:30:02.000Z" itemprop="datePublished">2019-05-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java 注解 （Annotation）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>annotation: Java 注解用于为 Java 代码提供元数据。作为元数据，注解不直接影响你的代码执行，但也有一些类型的注解实际上可以用于这一目的。Java 注解是从 Java5 开始添加到 Java 的。下文为关于 annotation的学习笔记。</p>
+</blockquote>
+<h1 id="1-annotation的地位"><a href="#1-annotation的地位" class="headerlink" title="1. annotation的地位"></a>1. annotation的地位</h1><ul>
+<li>annotation是一种类型，跟Class, Interface一个层面上的定义。</li>
+<li>annotation在 rt.jar 中的 lang.annotation 中定义，其使用与 lang.reflect 紧密相关。</li>
+</ul>
+<h1 id="2-annotation的语法"><a href="#2-annotation的语法" class="headerlink" title="2. annotation的语法"></a>2. annotation的语法</h1><h2 id="2-1-理解："><a href="#2-1-理解：" class="headerlink" title="2.1 理解："></a>2.1 理解：</h2><ul>
+<li>Java 注解用于为 Java 代码提供元数据。作为元数据，注解不直接影响你的代码执行，但也有一些类型的注解实际上可以用于这一目的。Java 注解是从 Java5 开始添加到 Java 的。  </li>
+<li>注解就是一种标签，一种盖章。可以给事物打上这种标签，使得事物具有某种属性。</li>
+</ul>
+<h2 id="2-2-定义："><a href="#2-2-定义：" class="headerlink" title="2.2 定义："></a>2.2 定义：</h2><p>注解通过 @interface关键字进行定义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Login &#123;&#125; <span class="comment">// 理解：创建了一张名字为 Login 的标签。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-元注解："><a href="#2-3-元注解：" class="headerlink" title="2.3 元注解："></a>2.3 元注解：</h2><ul>
+<li>元注解是一种基本注解，能给注解加注解。</li>
+<li>元标签有 @Retention、@Documented、@Target、@Inherited、@Repeatable 5 种。  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//保留期:当 @Retention 应用到一个注解上的时候，它解释说明了这个注解的的存活时间。</span></span><br><span class="line"><span class="comment">//分为：源码期，编译期，运行期：</span></span><br><span class="line"><span class="comment">//      SOURCE(源码阶段保留，编译时丢弃)，</span></span><br><span class="line"><span class="comment">//      CLASS(保留到编译期，不被加载到JVM)，</span></span><br><span class="line"><span class="comment">//      RUNTIME（保留到程序运行，它会被加载进入到 JVM 中，在程序运行时可以获取到）</span></span><br><span class="line"><span class="meta">@Retention()</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// 文档:作用是能够将注解中的元素包含到 Javadoc 中去。</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//目标: @Target 指定了注解运用的场景。</span></span><br><span class="line"><span class="comment">//分为： 注解，构造方法，属性，局部变量，方法，包，方法内参数，类：</span></span><br><span class="line"><span class="comment">//      ANNOTATION_TYPE: 可以给注解进行注解</span></span><br><span class="line"><span class="comment">//      CONSTRUCTOR ：给构造方法进行注解</span></span><br><span class="line"><span class="comment">//      FIELD ：给属性进行注解</span></span><br><span class="line"><span class="comment">//      LOCAL_VARIABLE： 给局部变量进行注解</span></span><br><span class="line"><span class="comment">//      METHOD ：给方法进行注解</span></span><br><span class="line"><span class="comment">//      PACKAGE ：给一个包进行注解</span></span><br><span class="line"><span class="comment">//      PARAMETER ：给方法内的参数进行注解</span></span><br><span class="line"><span class="comment">//      TYPE ：可以给一个类型进行注解，比如类、接口、枚举</span></span><br><span class="line"><span class="meta">@Target()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 继承, 超类被一个 “被 @Inherited注解过的注解 @testA” 注解，则子类也拥有这个注解 @testA。 </span></span><br><span class="line"><span class="meta">@Inherited()</span></span><br><span class="line">    <span class="comment">//eg：</span></span><br><span class="line">        <span class="meta">@Inherited</span></span><br><span class="line">        <span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line">        <span class="meta">@interface</span> Test &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Test</span></span><br><span class="line">        <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;&#125; <span class="comment">// B也具有了 @Test 的注解</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可重复, 同一个注解可以用来加在同一个事物上多次</span></span><br><span class="line"><span class="meta">@Repeatable()</span></span><br><span class="line">    <span class="comment">//eg：</span></span><br><span class="line">        <span class="meta">@interface</span> Persons &#123;</span><br><span class="line">         Person[]  value();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Repeatable(Persons.class)</span></span><br><span class="line">        <span class="meta">@interface</span> Person&#123;</span><br><span class="line">        	String role <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Person(role=&quot;artist&quot;)</span></span><br><span class="line">        <span class="meta">@Person(role=&quot;coder&quot;)</span></span><br><span class="line">        <span class="meta">@Person(role=&quot;PM&quot;)</span></span><br><span class="line">        <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperMan</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-注解的属性"><a href="#2-4-注解的属性" class="headerlink" title="2.4 注解的属性"></a>2.4 注解的属性</h2></li>
+<li>在注解中定义属性时它的类型必须是 8 种基本数据类型（char,int,short,long,boolean,byte,double,float）外加String、 class、 enum、接口、注解及它们的数组</li>
+<li>示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.TYPE)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TestAnnotation &#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">id</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">msg</span><span class="params">()</span> <span class="keyword">default</span> &quot;Hi&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TestAnnotation(id=3,msg=&quot;hello annotation&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="2-5-Java-预置的注解"><a href="#2-5-Java-预置的注解" class="headerlink" title="2.5 Java 预置的注解"></a>2.5 Java 预置的注解</h2><ul>
+<li>@Deprecated ：过时的元素</li>
+<li>@Override: override</li>
+<li>@SuppressWarnings:关闭不当的编译器警告。</li>
+<li>@SafeVarargs：参数安全类型注解。它的目的是提醒开发者不要用参数做一些不安全的操作。</li>
+<li>@FunctionalInterface: 函数式编程接口</li>
+</ul>
+<h2 id="2-6-注解的提取-反射"><a href="#2-6-注解的提取-反射" class="headerlink" title="2.6 注解的提取 - 反射"></a>2.6 注解的提取 - 反射</h2><p>注解是元素的一个标签，想要获取注解，先获取元素。所以获取 class, method, field等就需要用到 reflect的方法。<br>基本的使用方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAnnotationPresent</span><span class="params">(Class&lt;? extends Annotation&gt; annotationClass)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span> &lt;A extends Annotation&gt; <span class="function">A <span class="title">getAnnotation</span><span class="params">(Class&lt;A&gt; annotationClass)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span> Annotation[] getAnnotations() &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>获取到annotation后，再获取相应的属性即可。</p>
+<h1 id="3-annotation的应用"><a href="#3-annotation的应用" class="headerlink" title="3. annotation的应用"></a>3. annotation的应用</h1><p>annotation的应用或者作用不能一概而论，分类讨论，注解的分类如下：  </p>
+<h2 id="3-1-按照运行机制划分："><a href="#3-1-按照运行机制划分：" class="headerlink" title="3.1 按照运行机制划分："></a>3.1 按照运行机制划分：</h2><ol>
+<li><p>源码注解:<br> 提供信息给编译器，编译器可以利用注解来探测错误和警告信息</p>
+</li>
+<li><p>编译时注解：<br> 软件工具可以用来利用注解信息来生成代码、Html文档或者做其它相应处理。<br> eg：@Override、@Deprecated、@SuppressWarnings</p>
+</li>
+<li><p>运行时注解：<br> 某些注解可以在程序运行的时候接受代码的提取<br> eg：Spring的 @Autowired自动注入</p>
+</li>
+</ol>
+<h2 id="3-2-按照来源划分："><a href="#3-2-按照来源划分：" class="headerlink" title="3.2 按照来源划分："></a>3.2 按照来源划分：</h2><ol>
+<li><p>来自JDK的注解<br>@Retention、@Documented、@Target、@Inherited、@Repeatable</p>
+</li>
+<li><p>来自第三方的注解<br>举例：<br><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E9%97%B2%E6%95%A3/%E6%B3%A8%E8%A7%A3.png" alt="来自第三方的注解">  </p>
+</li>
+<li><p>自定义注解  </p>
+</li>
+</ol>
+<h2 id="3-3-元注解："><a href="#3-3-元注解：" class="headerlink" title="3.3 元注解："></a>3.3 元注解：</h2><p>注解的注解。</p>
+<h1 id="4-自定义注解实战"><a href="#4-自定义注解实战" class="headerlink" title="4. 自定义注解实战"></a>4. 自定义注解实战</h1><h2 id="4-1-利用自定义注解-标记-“登陆后方法”，并结合拦截器检查"><a href="#4-1-利用自定义注解-标记-“登陆后方法”，并结合拦截器检查" class="headerlink" title="4.1 利用自定义注解 标记 “登陆后方法”，并结合拦截器检查"></a>4.1 利用自定义注解 标记 “登陆后方法”，并结合拦截器检查</h2><p>定义@Login注解：<br>Login</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 登录效验</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Login &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结合Interceptor设置登录状态判断：<br>AuthorizationInterceptor.java  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 权限(Token)验证</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuthorizationInterceptor</span> <span class="keyword">extends</span> <span class="title">HandlerInterceptorAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> TokenService tokenService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String USER_KEY = <span class="string">&quot;userId&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//<span class="doctag">TODO:</span> 判断该方法是否需要进行登录状态的校验。</span></span><br><span class="line">        Login annotation;</span><br><span class="line">        <span class="keyword">if</span>(handler <span class="keyword">instanceof</span> HandlerMethod) &#123;</span><br><span class="line">            annotation = ((HandlerMethod) handler).getMethodAnnotation(Login.class);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>; <span class="comment">//不需要登录状态校验，直接返回。</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(annotation == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>; <span class="comment">//不需要登录状态校验，直接返回。</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//下面的登录校验的业务逻辑不需要关注。</span></span><br><span class="line">        <span class="comment">//从header中获取token</span></span><br><span class="line">        String token = request.getHeader(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">        <span class="comment">//如果header中不存在token，则从参数中获取token</span></span><br><span class="line">        <span class="keyword">if</span>(StringUtils.isBlank(token))&#123;</span><br><span class="line">            token = request.getParameter(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//token为空</span></span><br><span class="line">        <span class="keyword">if</span>(StringUtils.isBlank(token))&#123;</span><br><span class="line">            RRException exception = <span class="keyword">new</span> RRException(<span class="string">&quot;token不能为空&quot;</span>);</span><br><span class="line">            exception.setCode(<span class="number">401</span>);</span><br><span class="line">            <span class="keyword">throw</span> exception;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//查询token信息</span></span><br><span class="line">        TokenEntity tokenEntity = tokenService.queryByToken(token);</span><br><span class="line">        <span class="keyword">if</span>(tokenEntity == <span class="keyword">null</span> || tokenEntity.getExpireTime().getTime() &lt; System.currentTimeMillis())&#123;</span><br><span class="line">            RRException exception = <span class="keyword">new</span> RRException(<span class="string">&quot;token失效，请重新刷新token&quot;</span>);</span><br><span class="line">            exception.setCode(<span class="number">401</span>);</span><br><span class="line">            <span class="keyword">throw</span> exception;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//设置userId到request里，后续根据userId，获取用户信息</span></span><br><span class="line">        request.setAttribute(USER_KEY, tokenEntity.getUserId());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体使用：<br>EvaluationRealtimeController.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> ztp</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2018-5-29</span></span><br><span class="line"><span class="comment"> * 列出一段时间内的，某个用户的评估结果，list形式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Login</span> <span class="comment">//这句话表示下面的方法，需要进过登录状态判断，必须是登录后才可以访问到的方法</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/list/duringTime/&#123;startTime&#125;/&#123;endTime&#125;&quot;)</span></span><br><span class="line"><span class="meta">@ApiOperation(&quot;列出一段时间内的，某个用户的评估结果&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> R <span class="title">listDuringTime</span><span class="params">(<span class="meta">@ApiParam(value = &quot;YYYY-MM-DD HH:mm:SS&quot;, required = true)</span><span class="meta">@PathVariable(&quot;startTime&quot;)</span> String startTime,</span></span></span><br><span class="line"><span class="function"><span class="params">                         <span class="meta">@ApiParam(value = &quot;YYYY-MM-DD HH:mm:SS&quot;, required = true)</span><span class="meta">@PathVariable(&quot;endTime&quot;)</span> String endTime,</span></span></span><br><span class="line"><span class="function"><span class="params">                         <span class="meta">@ApiIgnore</span> <span class="meta">@RequestAttribute(&quot;userId&quot;)</span> Long userId)</span></span>&#123;</span><br><span class="line">    List&lt;TrainRealtimeInstanceEntity&gt; list =evaluationRealtimeService.queryDuringTimeAndUserId(userId,startTime,endTime);</span><br><span class="line">    <span class="keyword">return</span> R.ok().put(<span class="string">&quot;list&quot;</span>, list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="4-2-利用自定义注解实现-ORM-映射"><a href="#4-2-利用自定义注解实现-ORM-映射" class="headerlink" title="4.2 利用自定义注解实现 ORM 映射"></a>4.2 利用自定义注解实现 ORM 映射</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/05/19/annotation/" data-id="ckebizjw9000j647kht827vxn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/23/financial-management/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          financial_management
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/05/16/SCM/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">供应链 - 库存管理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>供应链 - 库存管理 | Ztxpp&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="除了约束理论和Heide象征论之外，库存管理、采购管理、风险管理已经逐步成为支撑供应链管理发展的理论基 础。 本文主要总结库存管理的基本概念，以辅助理解库存管理中的业务逻辑和流程。参考资料：    东南大学物流管理工程系-供应链与物流管理   [美] 大卫·辛奇-厉维 《供应链设计与管理》   1. 供应链 基本概念1.1 定义 供应链的定义：生产及流通过程中，涉及将产品更新换代或服务提供给最终">
+<meta property="og:type" content="article">
+<meta property="og:title" content="供应链 - 库存管理">
+<meta property="og:url" content="ztxpp.cc/2019/05/16/SCM/index.html">
+<meta property="og:site_name" content="Ztxpp&#39;s Blog">
+<meta property="og:description" content="除了约束理论和Heide象征论之外，库存管理、采购管理、风险管理已经逐步成为支撑供应链管理发展的理论基 础。 本文主要总结库存管理的基本概念，以辅助理解库存管理中的业务逻辑和流程。参考资料：    东南大学物流管理工程系-供应链与物流管理   [美] 大卫·辛奇-厉维 《供应链设计与管理》   1. 供应链 基本概念1.1 定义 供应链的定义：生产及流通过程中，涉及将产品更新换代或服务提供给最终">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E4%BE%9B%E5%BA%94%E9%93%BE%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E7%BB%8F%E6%B5%8E%E6%89%B9%E9%87%8F%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="https://wiki.mbalib.com/w/images/9/9d/%E7%BB%8F%E6%B5%8E%E8%AE%A2%E8%B4%A7%E6%89%B9%E9%87%8F1.jpg">
+<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E5%AE%9A%E6%9C%9F%E5%AD%98%E5%82%A8.png">
+<meta property="article:published_time" content="2019-05-16T08:58:47.000Z">
+<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
+<meta property="article:author" content="zhutianpeng">
+<meta property="article:tag" content="供应链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E4%BE%9B%E5%BA%94%E9%93%BE%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%81%E7%A8%8B.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SCM" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/16/SCM/" class="article-date">
+  <time datetime="2019-05-16T08:58:47.000Z" itemprop="datePublished">2019-05-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      供应链 - 库存管理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>除了约束理论和Heide象征论之外，库存管理、采购管理、风险管理已经逐步成为支撑供应链管理发展的理论基 础。 本文主要总结库存管理的基本概念，以辅助理解库存管理中的业务逻辑和流程。<br>参考资料：  </p>
+<ul>
+<li>东南大学物流管理工程系-供应链与物流管理  </li>
+<li>[美] 大卫·辛奇-厉维 《供应链设计与管理》</li>
+</ul>
+</blockquote>
+<h1 id="1-供应链-基本概念"><a href="#1-供应链-基本概念" class="headerlink" title="1. 供应链 基本概念"></a>1. 供应链 基本概念</h1><h2 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h2><ul>
+<li><p>供应链的定义：生产及流通过程中，涉及将产品更新换代或服务提供给最终用户的上游或下游企业，所形成的网络结构。</p>
+</li>
+<li><p>供应链管理的定义：</p>
+<ul>
+<li>中国的定义： 利用计算机网络技术全面规划供应链中的商流、物流、信息流、资金流等，并进行计划、组织、协调与控制等。</li>
+<li>GSCF的定义： 供应链管理就是指对整个供应链系统进行计划、协调、操作、控制和优化的各种活动和过程，其目标是要将消费者所需的正确的产品、能够在正确的时间、按照正确的数量、正确的质量、正确的状态、正确的成本，送到正确的地点（5R/7R）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-2-供应链管理的流程"><a href="#1-2-供应链管理的流程" class="headerlink" title="1.2 供应链管理的流程"></a>1.2 供应链管理的流程</h2><p><img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E4%BE%9B%E5%BA%94%E9%93%BE%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%81%E7%A8%8B.png" alt="物流管理的流程"></p>
+<h2 id="1-3-供应链的理论基础"><a href="#1-3-供应链的理论基础" class="headerlink" title="1.3 供应链的理论基础"></a>1.3 供应链的理论基础</h2><ul>
+<li>约束理论和Heide象征论</li>
+<li>库存管理</li>
+<li>采购管理</li>
+<li>风险管理</li>
+</ul>
+<h1 id="2-库存管理-库存管理基本知识"><a href="#2-库存管理-库存管理基本知识" class="headerlink" title="2. 库存管理 - 库存管理基本知识"></a>2. 库存管理 - 库存管理基本知识</h1><h2 id="2-1-库存的相关概念："><a href="#2-1-库存的相关概念：" class="headerlink" title="2.1 库存的相关概念："></a>2.1 库存的相关概念：</h2><ol>
+<li>定义</li>
+</ol>
+<ul>
+<li>狭义：指的是在仓库中处于暂时停滞状态的物资</li>
+<li>广义： 库存表示用于将来目的、暂时处于闲置状态的资源</li>
+</ul>
+<ol start="2">
+<li>企业进行仓储主要有以下四个基本原因：</li>
+</ol>
+<ul>
+<li>降低运输－生产成本</li>
+<li>协调供应和需求</li>
+<li>辅助生产</li>
+<li>辅助市场销售</li>
+</ul>
+<ol start="3">
+<li>库存的利与弊 - “库存是一个必要的恶魔”：</li>
+</ol>
+<ul>
+<li><p>利：</p>
+<ul>
+<li>客户资源平衡（缩短交货期）</li>
+<li>生产资源平衡（稳定生产需求）</li>
+<li>运输资源平衡</li>
+</ul>
+</li>
+<li><p>弊：</p>
+<ul>
+<li>占用大量资金</li>
+<li>增加企业费用支出</li>
+<li>腐烂变质的损失</li>
+<li>麻痹管理人员的思想（库存具有缓冲作用，“冰山效应”，能掩盖企业中出现的一些问题）</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li><p>现代“零库存”管理 的含义：（行程良性循环）<br> 降低库存→暴露生产系统中的问题→改进生产系统→更完善的生产系统→进一步降低库存</p>
+</li>
+<li><p>库存的分类</p>
+</li>
+</ol>
+<ul>
+<li>在途库存：处于流通中（运输途中）</li>
+<li>“投机库存”： 对于某些原材料，有时是为了价格投机，有时是为了满足运作需要。</li>
+<li>周期性库存：为了满足连续补货期间的平均需求而储存的必要存货，很大程度上取决于生产批量的规模、经济- 运输批量、存储空间的限制、补货提前期、价格－数量折扣计划和库存持有成本等因素。</li>
+<li>额外库存/安全库存：为防范需求和补货提前期的变动而建立库存。</li>
+</ul>
+<ol start="6">
+<li>库存的种类：</li>
+</ol>
+<ul>
+<li>原材料和外购件库存</li>
+<li>半成品库存及在制品（work in progress）库存</li>
+<li>成品（Finished-goods）库存</li>
+<li>备品、备件、工具、工艺装备库存</li>
+<li>在途库存（Goods-in-transit to warehouses or customers）</li>
+</ul>
+<h2 id="2-2-库存控制的因素和指标"><a href="#2-2-库存控制的因素和指标" class="headerlink" title="2.2 库存控制的因素和指标"></a>2.2 库存控制的因素和指标</h2><ol>
+<li>库存管理的衡量指标：</li>
+</ol>
+<ul>
+<li>平均库存值</li>
+<li>可供应时间</li>
+<li>库存周转率</li>
+</ul>
+<ol start="2">
+<li><p>库存产生的原因：</p>
+<p> 供求关系的失调。</p>
+<p> 所以需求的预测比较重要，普通产品的需求模式的分类：</p>
+<ul>
+<li>终止性需求(eg：飞机零件)</li>
+<li>持久性需求（eg：罐头汤）</li>
+<li>起伏性需求（eg：建筑设备）</li>
+<li>季节性需求（eg：室内空调）</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-3-库存控制系统"><a href="#2-3-库存控制系统" class="headerlink" title="2.3 库存控制系统"></a>2.3 库存控制系统</h2><ol>
+<li>需求特性：</li>
+</ol>
+<ul>
+<li>确定性需求: 定性定量的</li>
+<li>随机性需求: “量”、”时间“不知，但其概率分布函数可知</li>
+<li>不确定性需求：“量”、“时间”均无法确定</li>
+</ul>
+<ol start="2">
+<li>供应特征：</li>
+</ol>
+<ul>
+<li>订货提前期</li>
+<li>起订点</li>
+<li>采购价格和折扣</li>
+</ul>
+<ol start="3">
+<li>进货方式</li>
+</ol>
+<ul>
+<li><p>定量订货方式：<br>  订货批量每次不变，订货间隔期随需求量的变化而变化<br>  例如：经济批量模型</p>
+<p>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E7%BB%8F%E6%B5%8E%E6%89%B9%E9%87%8F%E6%A8%A1%E5%9E%8B.png" alt="经济批量模型"><br>  <img src="https://wiki.mbalib.com/w/images/9/9d/%E7%BB%8F%E6%B5%8E%E8%AE%A2%E8%B4%A7%E6%89%B9%E9%87%8F1.jpg" alt="经济批量模型">   </p>
+</li>
+<li><p>定期订货方式：<br>  订货间隔期固定不变，每次订货量随需求量的变化而变化<br>  例如：<br>  <img src="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/%E7%89%A9%E6%B5%81%E7%AE%A1%E7%90%86/%E5%AE%9A%E6%9C%9F%E5%AD%98%E5%82%A8.png" alt="定期存储"></p>
+</li>
+</ul>
+<ol start="4">
+<li>库存的成本构成</li>
+</ol>
+<ul>
+<li><p>订货成本 （Ordering Costs，$C_O$）</p>
+</li>
+<li><p>库存持有成本 （Holding Costs，$C_H$）</p>
+<p>  过时成本； 损坏/报废； 税； 保险； 存储； 资金（机会成本）。</p>
+</li>
+<li><p>缺货成本 （Shortage loss Costs，$C_S$）</p>
+</li>
+</ul>
+<h2 id="2-4-库存控制方法"><a href="#2-4-库存控制方法" class="headerlink" title="2.4 库存控制方法"></a>2.4 库存控制方法</h2><p>需要解决的问题：需求预测和订货批量的计算！</p>
+<ol>
+<li><p>60天订货法则 （“凭常识的”库存控制方法）<br> 每次重新订货时，订足够数量的物料使得现有库存与已订货量的总数等于过去60天的销售量。</p>
+</li>
+<li><p>ABC分类法 （类似于“二八定律”）</p>
+</li>
+</ol>
+<ul>
+<li>分类标准：<ul>
+<li>A类物资占全部库存物资的10%左右，而其需求量却占全部物资总需求量的70%左右；</li>
+<li>B类物资种类数占20%左右，而其需求量大致也为总需求量的20%左右；</li>
+<li>C类物资种类数占70%左右，而其需求量只占总需求量的10%左右。</li>
+</ul>
+</li>
+<li>原则：<br>  将管理的重点放在重要的库存物资上，进行分类管理和控制。</li>
+</ul>
+<ol start="3">
+<li>订货点法</li>
+</ol>
+<ul>
+<li><p>定义<br>  在需求量和运作周期已知的情况下，基本订货点或称再订货点可以采用如下公式计算：</p>
+<p>  $$R＝D∗T$$</p>
+<ul>
+<li><p>R—用单位数表示的再订货点</p>
+</li>
+<li><p>D—平均日需求量</p>
+</li>
+<li><p>T—平均运营周期。</p>
+<p>当需求量或完成周期存在不确定因素时，就必须使用库存缓冲来补偿不确定因素。在不确定条件下，再订货点公式变 为：</p>
+<p>$$R＝D∗T＋SS$$</p>
+</li>
+<li><p>SS—为用单位数表示的安全库存或缓冲库存。</p>
+</li>
+<li><p>四种库存策略</p>
+<ul>
+<li>（Q,R）策略</li>
+<li>（R,S）策略</li>
+<li>（t,S）策略</li>
+<li>（t,R,S）策略</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ztxpp.cc/2019/05/16/SCM/" data-id="ckebizjw6000d647khvdde9ss" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/19/annotation/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java 注解 （Annotation）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/05/06/MQ/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">以activemq为例的消息中间件浅析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 zhutianpeng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
