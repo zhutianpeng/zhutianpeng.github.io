@@ -1,104 +1,126 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+<html lang="zh-cn">
+  <head><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-  
-  <title>mybatis源码学习 | Ztxpp&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="软件开发工程师进阶，必须要学会阅读源码，以mybatis的源码为例进行源码阅读的训练和学习，重点有二，一是学习mybatis的设计模式和编码方式，二是学习阅读源码的方式。参照资料：深入浅出MyBatis技术内幕  注：看源码的过程中，发现自己不熟悉的知识点： java泛型，lambda表达式，一些设计模式等。 1. 整体架构 2. 日志模块2.0 需求分析需求：  MyBatis没有提供日志的实">
-<meta property="og:type" content="article">
-<meta property="og:title" content="mybatis源码学习">
-<meta property="og:url" content="ztxpp.cc/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/index.html">
-<meta property="og:site_name" content="Ztxpp&#39;s Blog">
-<meta property="og:description" content="软件开发工程师进阶，必须要学会阅读源码，以mybatis的源码为例进行源码阅读的训练和学习，重点有二，一是学习mybatis的设计模式和编码方式，二是学习阅读源码的方式。参照资料：深入浅出MyBatis技术内幕  注：看源码的过程中，发现自己不熟悉的知识点： java泛型，lambda表达式，一些设计模式等。 1. 整体架构 2. 日志模块2.0 需求分析需求：  MyBatis没有提供日志的实">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191105142603.png">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107140626.png">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107163632.png">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191107173622.png">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191109164827.png">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191116144917.png">
-<meta property="og:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191117160149.png">
-<meta property="article:published_time" content="2019-11-02T07:28:42.000Z">
-<meta property="article:modified_time" content="2020-06-18T09:43:24.000Z">
-<meta property="article:author" content="zhutianpeng">
-<meta property="article:tag" content="java">
-<meta property="article:tag" content="mybatis">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://selfstudy.oss-cn-beijing.aliyuncs.com/blog/20191105142603.png">
-  
-    <link rel="alternate" href="/atom.xml" title="Ztxpp&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-<meta name="generator" content="Hexo 5.1.1"></head>
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Ztxpp&#39;s Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ztxpp.cc"></form>
-      </div>
-    </div>
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="mybatis源码学习"/><meta name="keywords" content="java, mybatis, Ztxpp's Blog" /><link rel="alternate" href="/default" title="Ztxpp's Blog" ><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0" />
+<link rel="canonical" href="ztxpp.cc/2019/11/02/mybatis源码学习/"/>
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" /><link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0" />
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true,"latex":false};
+</script>
+
+    <title>mybatis源码学习 - Ztxpp's Blog</title>
+  <meta name="generator" content="Hexo 5.1.1"></head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Ztxpp's Blog</a>
   </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/Base/">
+        <li class="mobile-menu-item">文档
+          </li>
+      </a><a href="/life/">
+        <li class="mobile-menu-item">生活
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Ztxpp's Blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/Base/">
+            文档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/life/">
+            生活
+            </a>
+        </li>
+      </ul></nav>
 </header>
-      <div class="outer">
-        <section id="main"><article id="post-mybatis源码学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" class="article-date">
-  <time datetime="2019-11-02T07:28:42.000Z" itemprop="datePublished">2019-11-02</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      mybatis源码学习
-    </h1>
-  
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">mybatis源码学习
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-11-02
+        </span></div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-text">1. 整体架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97"><span class="toc-text">2. 日志模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-0-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">2.0 需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E6%97%A5%E5%BF%97%E7%9A%84%E9%80%82%E9%85%8D%E5%99%A8"><span class="toc-text">2.1 日志的适配器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%9D%97%E5%AE%9E%E7%8E%B0%E5%8A%A0%E8%BD%BD%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-text">2.2 静态代码块实现加载的优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%B5%8C%E5%85%A5%E6%97%A5%E5%BF%97%E5%8A%9F%E8%83%BD"><span class="toc-text">2.3 动态代理嵌入日志功能</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E6%BA%90%E6%A8%A1%E5%9D%97"><span class="toc-text">3. 数据源模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-0-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">3.0 需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E7%94%B1%E6%95%B0%E6%8D%AE%E6%BA%90%E5%B7%A5%E5%8E%82%E4%BA%A7%E7%94%9F%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="toc-text">3.1 由数据源工厂产生数据源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E7%94%B1%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%88%E8%BF%9E%E6%8E%A5%E6%B1%A0%EF%BC%89%E4%BA%A7%E7%94%9F%E8%BF%9E%E6%8E%A5"><span class="toc-text">3.2 由数据源（连接池）产生连接</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9D%97"><span class="toc-text">4. 缓存模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%BA%94%E7%94%A8%EF%BC%9A-MyBatis%E6%9C%89%E4%B8%A4%E7%BA%A7%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6"><span class="toc-text">4.1 应用： MyBatis有两级缓存机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">4.2 需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9D%97%E7%9A%84%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD%E5%8F%8A%E5%85%B6%E4%BB%BB%E6%84%8F%E5%8F%A0%E5%8A%A0"><span class="toc-text">4.3 装饰器模式实现缓存模块的附加功能及其任意叠加</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80%E4%B8%AA%E8%A3%85%E9%A5%B0%E8%80%85%E5%AE%9E%E7%8E%B0%E7%B1%BB%EF%BC%9ABlockingCache"><span class="toc-text">4.4 详细分析一个装饰者实现类：BlockingCache</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-%E8%A3%85%E9%A5%B0%E5%99%A8%E7%9A%84%E6%B7%BB%E5%8A%A0"><span class="toc-text">4.5 装饰器的添加</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-%E7%BC%93%E5%AD%98%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6"><span class="toc-text">4.5 缓存与数据库同步机制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E5%8F%8D%E5%B0%84%E6%A8%A1%E5%9D%97"><span class="toc-text">5. 反射模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-%E5%8F%8D%E5%B0%84%E6%A8%A1%E5%9D%97%E6%A6%82%E8%BF%B0"><span class="toc-text">5.1 反射模块概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-ObjectFactory"><span class="toc-text">5.2 ObjectFactory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-Reflector-amp-amp-ReflectorFactory"><span class="toc-text">5.3 Reflector &amp;&amp; ReflectorFactory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-4-ObjectWrapper"><span class="toc-text">5.4 ObjectWrapper</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-5-MetaObject-amp-amp-SystemMetaObject"><span class="toc-text">5.5 MetaObject &amp;&amp; SystemMetaObject</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-6-%E6%A8%A1%E6%8B%9FMybatis%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%B0%84%E6%A8%A1%E5%9D%97"><span class="toc-text">5.6 模拟Mybatis使用反射模块</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><blockquote>
 <p>软件开发工程师进阶，必须要学会阅读源码，以mybatis的源码为例进行源码阅读的训练和学习，重点有二，一是学习mybatis的设计模式和编码方式，二是学习阅读源码的方式。参照资料：<a target="_blank" rel="noopener" href="https://ke.qq.com/course/435473?tuin=7b49ac1d">深入浅出MyBatis技术内幕</a></p>
 </blockquote>
 <p>注：看源码的过程中，发现自己不熟悉的知识点： java泛型，lambda表达式，一些设计模式等。</p>
@@ -304,146 +326,69 @@
 <p>后记：<br>Mybatis的源码量较大，这次学习只涉及到：日志模块、数据源模块、缓存模块、反射模块 这四个模块，甚至没有涉及到源码的运行流程，只是停留在基础组件层。 学习源码的过程先看文档，再分层，然后梳理流程找入口，最后多调试。这只是开始，后续需要学习jdk并发部分和Spring的源码。</p>
 </blockquote>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="ztxpp.cc/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" data-id="ckebizjxn003e647kfpt74shm" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          java泛型
-        
       </div>
-    </a>
-  
-  
-    <a href="/2019/10/22/designPattern3/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">设计模式（三）行为型</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">dubbo - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/financial/" rel="tag">financial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-OOM/" rel="tag">java - OOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">java - SpringCloud - 微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mysql/" rel="tag">java - mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-reflect/" rel="tag">java - reflect</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-sort/" rel="tag">java - sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">java - 动态规划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-%E5%B9%B6%E5%8F%91/" rel="tag">java - 并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" rel="tag">中间件 - activemq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" rel="tag">供应链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">牛客网 - 二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" rel="tag">牛客网 - 数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" rel="tag">牛客网 - 链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6/" rel="tag">读书</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" rel="tag">项目 - 面试</a></li></ul>
-    </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="ztxpp.cc">zhutianpeng</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="ztxpp.cc/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">ztxpp.cc/2019/11/02/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
   </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            <a href="/tags/mybatis/">mybatis</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/11/06/java%E6%B3%9B%E5%9E%8B/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">java泛型</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2019/10/22/designPattern3/">
+        <span class="next-text nav-default">设计模式（三）行为型</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
 
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+        <a target="_blank" rel="noopener" href="https://github.com/ahonn" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Docker/" style="font-size: 16px;">Docker</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/dubbo-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">dubbo - 微服务</a> <a href="/tags/financial/" style="font-size: 10px;">financial</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-OOM/" style="font-size: 10px;">java - OOM</a> <a href="/tags/java-SpringCloud-%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">java - SpringCloud - 微服务</a> <a href="/tags/java-mysql/" style="font-size: 10px;">java - mysql</a> <a href="/tags/java-reflect/" style="font-size: 10px;">java - reflect</a> <a href="/tags/java-sort/" style="font-size: 10px;">java - sort</a> <a href="/tags/java-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" style="font-size: 10px;">java - 动态规划</a> <a href="/tags/java-%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">java - 并发</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6-activemq/" style="font-size: 10px;">中间件 - activemq</a> <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/" style="font-size: 10px;">供应链</a> <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" style="font-size: 10px;">前后端分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 10px;">牛客网 - 二叉树</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E6%95%B0%E7%BB%84/" style="font-size: 10px;">牛客网 - 数组</a> <a href="/tags/%E7%89%9B%E5%AE%A2%E7%BD%91-%E9%93%BE%E8%A1%A8/" style="font-size: 10px;">牛客网 - 链表</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 14px;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6/" style="font-size: 12px;">读书</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">项目 - 面试</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/05/09/threadLearn6/">多线程与高并发（六）Wait-Notify与LockSupport</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/07/threadLearn5-2/">多线程与高并发（五）JUC同步工具(2)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/06/threadLearn5/">多线程与高并发（五）JUC同步工具(1)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/01/threadLearn4/">多线程与高并发（四）CAS与Atomic</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/01/threadLearn3/">多线程与高并发（三）Volatile关键字</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 zhutianpeng<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
+  <span class="copyright-year">&copy;2015 - 2021<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">zhutianpeng</span>
+  </span>
+</div>
 </footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-  </div>
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
 </body>
 </html>
